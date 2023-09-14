@@ -1,0 +1,50 @@
+version: '3.8'
+services:
+  # react:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile 
+  #   ports:
+  #     - '3000:3000'
+  #   tty: true
+  #   stdin_open: true
+  go:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    depends_on:
+      - db
+    container_name: go-api
+    ports:
+      - "8080:8080"
+    tty: true
+    volumes:
+      - ./backend:/app
+      - .env:/app/.env
+    networks:
+      - default
+  db:
+    container_name: db
+    build: 
+     context: .
+     dockerfile: ./backend/db/Dockerfile
+    tty: true
+    ports:
+     - 3306:3306
+    environment:
+     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+     MYSQL_DATABASE: ${MYSQL_DATABASE}
+     MYSQL_USER:  ${MYSQL_USER}
+     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+     - type: volume
+       source: mysql_data
+       target: /var/lib/mysql
+    networks:
+     - default
+
+
+networks:
+ default:
+volumes:
+ mysql_data:

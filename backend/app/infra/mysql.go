@@ -5,34 +5,34 @@ import (
 	"gorm.io/gorm"
 )
 
-type Infra interface {
+type SqlHandler interface {
 	
 	CreateUser(user *entity.User) error
 	GetUserByEmail(user *entity.User, email string) error
 	
 }
 
-type infra struct {
+type sqlHandler struct {
 	db *gorm.DB
 }
 
 
-func NewInfra(db *gorm.DB) Infra {
-	return &infra{db} //暗黙的　構造体を返す
+func NewInfra(db *gorm.DB) SqlHandler {
+	return &sqlHandler{db} //暗黙的　構造体を返す
 }
 
 
 
 
-func  (i *infra)CreateUser(user *entity.User) error {
-	if err := i.db.Create(user).Error; err != nil {
+func  (s *sqlHandler)CreateUser(user *entity.User) error {
+	if err := s.db.Create(user).Error; err != nil {
 		return err
 	}
 	return nil
 }
 
-func (i *infra)GetUserByEmail(user *entity.User, email string) error {
-	if err := i.db.Where("email=?", email).First(user).Error; err != nil {
+func (s *sqlHandler)GetUserByEmail(user *entity.User, email string) error {
+	if err := s.db.Where("email=?", email).First(user).Error; err != nil {
 		return err
 	}
 	return nil

@@ -40,5 +40,10 @@ services:
      - ./backend/db/initdb.d:/docker-entrypoint-initdb.d/
     networks:
      - default
+  redis:
+    container_name: redis
+    image: redis:latest
+    ports:
+      - 6379:6379
 networks:
  default:

@@ -11,6 +11,7 @@ func NewRouter(c controller.Controller) *echo.Echo{
 
 
 	e.POST("/signup", c.Signup)
+	e.POST("/login", c.Login)
 
 	return e
 }

@@ -13,8 +13,9 @@ import (
 func main() {
 
 	db := infra.NewDB()
-	infra := infra.NewInfra(db)
-	usecase := usecase.NewUsecase(infra)
+	sh := infra.NewInfra(db)
+	rh := infra.NewRedisHandler()
+	usecase := usecase.NewUsecase(sh, rh)
 	controller := controller.NewController(usecase)
 
 

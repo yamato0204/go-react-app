@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"os"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -60,8 +59,7 @@ func (u *usecase) Login(user entity.User, c echo.Context) (string,string, error)
 	if err := u.sh.GetUserByEmail(&storeUser, user.Email); err != nil {
 		return "", "", err
 	}
-
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	cookieKey := "loginUserIdKey"
 	 redisKey , _ := u.rh.NewSession(c, storeUser.ID)
 	//cokkieに格納する値を返す
 

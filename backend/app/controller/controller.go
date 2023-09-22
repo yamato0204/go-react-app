@@ -57,7 +57,10 @@ func (cc *controller) Login(c echo.Context) error {
 	cookie.Name = cookieKey
 	cookie.Value = redisKey
 	cookie.Expires = time.Now().Add(24 * time.Hour)
+	//cookie.Secure = true
+	cookie.HttpOnly = true
     c.SetCookie(cookie)
 
-	return c.JSON(http.StatusCreated, cookie.Value)
+	return c.NoContent(http.StatusOK)
 }
+

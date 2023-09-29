@@ -8,10 +8,20 @@ import (
 func NewRouter(c controller.Controller) *echo.Echo{
 
 	e := echo.New()
-
-
 	e.POST("/signup", c.Signup)
 	e.POST("/login", c.Login)
+
+
+	t := e.Group("/tasks")
+	t.POST("", c.CreateArticle)
+
+
+//レコード関連
+
+	h := e.Group("record")
+	h.GET("G", c.GetRecordData)
+	h
+
 
 	return e
 }

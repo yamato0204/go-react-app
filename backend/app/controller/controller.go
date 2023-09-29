@@ -1,8 +1,8 @@
 package controller
 
 import (
-	
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -14,6 +14,8 @@ type Controller interface {
 
 	Signup(c echo.Context) error
 	Login(c echo.Context) error
+
+	CreateArticle(c echo.Context) error
 
 }
 
@@ -63,4 +65,29 @@ func (cc *controller) Login(c echo.Context) error {
 
 	return c.NoContent(http.StatusOK)
 }
+
+func (cc *controller)CreateArticle(c echo.Context) error {
+
+// sessionがあるのか確認
+  cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, "")
+  }
+
+//cookieからsessionIDを取り出し、userIDを取得
+  article := entity.Article{}
+  article.UserId = userId
+  articleRes, err := cc.u.CreateArticle(article)
+
+  if err != nil {
+	return c.JSON(http.StatusInternalServerError, err.Error())
+  }
+
+  return c.JSON(http.StatusCreated, articleRes)
+
+}
+
+
+
 

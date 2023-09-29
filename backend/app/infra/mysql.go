@@ -9,7 +9,7 @@ type SqlHandler interface {
 	
 	CreateUser(user *entity.User) error
 	GetUserByEmail(user *entity.User, email string) error
-	
+	CreateArticle(Article *entity.Article) error
 }
 
 type sqlHandler struct {
@@ -33,6 +33,13 @@ func  (s *sqlHandler)CreateUser(user *entity.User) error {
 
 func (s *sqlHandler)GetUserByEmail(user *entity.User, email string) error {
 	if err := s.db.Where("email=?", email).First(user).Error; err != nil {
+		return err
+	}
+	return nil
+ }
+
+ func (s *sqlHandler)CreateArticle(article *entity.Article) error {
+	if err := s.db.Create(article).Error; err != nil {
 		return err
 	}
 	return nil

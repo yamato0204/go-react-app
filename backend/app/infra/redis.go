@@ -1,8 +1,6 @@
 package infra
 
 import (
-	"fmt"
-
 	"net/http"
 	"time"
 
@@ -62,34 +60,21 @@ func (r *redisHandler)NewSession(c echo.Context, redisValue string) (string, err
 }
 //0f018422-652a-4bb3-b1b2-463c142c0803
 
-func (r *redisHandler)GetSession(c echo.Context, CookieKey string)(string, error) {
+func (r *redisHandler)GetSession(c echo.Context, redisKey string)(string, error) {
 	
-	 cookie, err := c.Cookie(CookieKey); 
-	 if err != nil {
-		return "", err
-	 }
-	redisKey := cookie.Value
+	//  cookie, err := c.Cookie(CookieKey); 
+	//  if err != nil {
+	// 	return "", err
+	//  }
+	//redisKey := cookie.Value
 	
-
-	
-	fmt.Println(redisKey)
 	redisValue, err := r.client.Get(r.client.Context(), redisKey).Result()
 
 	if err != nil {
 		return "",err
 	}
-	// switch {
-	// case err == redis.Nil:
-	// 	fmt.Println("SessionKeyが登録されていません。")
-	// 	return nil
-	// case err != nil:
-	// 	fmt.Println("Session取得時にエラー発生：" + err.Error())
-	// 	return nil
-	// }
 	
-	return redisValue, err
-
-	
+	return redisValue, err	
 		
 }
 

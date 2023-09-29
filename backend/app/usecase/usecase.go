@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"os"
 
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
@@ -15,7 +14,9 @@ type Usecase interface {
 	
 	Signup(user entity.User) (entity.UserResponse, error)
 	Login(user entity.User,c echo.Context) (string,string, error)
-	
+
+	CreateArticle(article entity.Article) (entity.ArticleResponse, error)
+	GetSession(c echo.Context, CookieKey string)(string, error)
 }
 
 type usecase struct {
@@ -26,7 +27,8 @@ type usecase struct {
 func NewUsecase(sh infra.SqlHandler, rh infra.RedisHandler) Usecase {
 	return &usecase{
 		sh,
-	    rh}
+	    rh,
+	}
 }
 
 
@@ -60,14 +62,56 @@ func (u *usecase) Login(user entity.User, c echo.Context) (string,string, error)
 	if err := u.sh.GetUserByEmail(&storeUser, user.Email); err != nil {
 		return "", "", err
 	}
-
-	cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
+	cookieKey := "loginUserIdKey"
 	 redisKey , _ := u.rh.NewSession(c, storeUser.ID)
 	//cokkieに格納する値を返す
-
-
 	//newSessionの返り値を返し、controllerでcookieに格納
 	return cookieKey, redisKey, nil
+}
+
+func (u *usecase) CreateArticle(article entity.Article) (entity.ArticleResponse, error) {
+
+	if err := u.sh.CreateArticle(&article);  err != nil {
+		return entity.ArticleResponse{}, err
+	}
+
+	resArticle := entity.ArticleResponse{
+		ID: article.ID,
+		Title: article.Title,
+	}
+
+	return resArticle, nil
+}
+
+func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
+	 cookie, err := c.Cookie(CookieKey); 
+	 if err != nil {
+		return "", err
+	 }
+	redisKey := cookie.Value
+
+	redisValue, err :=   u.rh.GetSession(c,redisKey)
+	if err != nil {
+		return "", err
+	}
+
+	return redisValue, nil
+
+
+	//  cookie, err := c.Cookie(CookieKey); 
+	//  if err != nil {
+	// 	return "", err
+	//  }
+	//redisKey := cookie.Value
+	
+
+	//全レコード取得
+	//レコード登録
+	//レコード削除
+	//
+
+
+
 }
 
 

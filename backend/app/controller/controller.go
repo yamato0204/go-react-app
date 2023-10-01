@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -14,6 +15,7 @@ type Controller interface {
 
 	Signup(c echo.Context) error
 	Login(c echo.Context) error
+	GetCookie(c echo.Context) error
 
 	CreateArticle(c echo.Context) error
 
@@ -61,9 +63,12 @@ func (cc *controller) Login(c echo.Context) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	//cookie.Secure = true
 	cookie.HttpOnly = true
-    c.SetCookie(cookie)
+	cookie.Path = "/"
+	cookie.Domain = "localhost:3000"
+	//cookie.SameSite = http.SameSiteNoneMode
+     c.SetCookie(cookie)
 
-	return c.NoContent(http.StatusOK)
+	return c.String(http.StatusOK, cookie.Name)
 }
 
 func (cc *controller)CreateArticle(c echo.Context) error {
@@ -88,6 +93,15 @@ func (cc *controller)CreateArticle(c echo.Context) error {
 
 }
 
+func (cc *controller)GetCookie(c echo.Context) error {
+	cookie, err := c.Cookie("loginUserIdKey")
 
+	if err != nil {
+		return c.String(http.StatusOK, "NoCookie")
+	}
 
+	fmt.Println(cookie.Name)
+	fmt.Println(cookie.Value)
+	return c.String(http.StatusOK, "read a cookie")
 
+}

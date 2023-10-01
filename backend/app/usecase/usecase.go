@@ -63,7 +63,7 @@ func (u *usecase) Login(user entity.User, c echo.Context) (string,string, error)
 		return "", "", err
 	}
 	cookieKey := "loginUserIdKey"
-	 redisKey , _ := u.rh.NewSession(c, storeUser.ID)
+	redisKey , _ := u.rh.NewSession(c, storeUser.ID)
 	//cokkieに格納する値を返す
 	//newSessionの返り値を返し、controllerでcookieに格納
 	return cookieKey, redisKey, nil

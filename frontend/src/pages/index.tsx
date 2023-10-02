@@ -4,33 +4,39 @@ import { GetServerSideProps } from 'next'
 import { client } from '@/libs/axios'
 import { get } from 'http';
 import { Router, useRouter } from 'next/router';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
 
 
-const inter = Inter({ subsets: ['latin'] })
-
-interface ServerSideProps {
-  // サーバーサイドプロップスの型定義を追加する場合はここに記述します
-}
+//const inter = Inter({ subsets: ['latin'] })
 
 
-const Index: React.FC<ServerSideProps> = () => {
-  const router = useRouter()
-   client.get('/cookie', {
+const Index: React.FC = () => {
+const router = useRouter()
+ 
+  
+  useEffect(() => {
+
+     client.get('/cookie', {
                 withCredentials: true
             }).then(
               (response) => {
                 console.log(response.data)
                 if (response.data == "NoCookie") {
                   console.log("loginへ")
-                  router.push("./login")
+                  router.push("/login")
                 } else {
                   console.log("ok")
+                  router.push("/home")
                 }
               }
             )
 
-  return <div></div>;
+  })
+  
+ 
+  
+
+  return  <div></div>;
 };
 export default Index;
 

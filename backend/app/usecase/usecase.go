@@ -1,9 +1,12 @@
 package usecase
 
 import (
+	
 
+	
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/yamato0204/go-react-app/app/entity"
 	"github.com/yamato0204/go-react-app/app/infra"
@@ -39,10 +42,15 @@ func (u *usecase)Signup(user entity.User) (entity.UserResponse, error) {
 		return entity.UserResponse{}, err
 	}
 
+	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
+	if err != nil {
+		return entity.UserResponse{}, err
+	}
+
 	newUser := entity.User{
 		ID: uuid.New().String(),
 		Email: user.Email,
-		Password: user.Password}
+		Password: string(hash)}
 		
 	err = u.sh.CreateUser(&newUser)
 	if err != nil {
@@ -60,6 +68,11 @@ func (u *usecase) Login(user entity.User, c echo.Context) (string,string, error)
 
 	storeUser := entity.User{}
 	if err := u.sh.GetUserByEmail(&storeUser, user.Email); err != nil {
+		return "", "", err
+	}
+
+	err := bcrypt.CompareHashAndPassword([]byte(storeUser.Password), []byte(user.Password))
+	if err != nil {
 		return "", "", err
 	}
 	cookieKey := "loginUserIdKey"

@@ -17,18 +17,23 @@ const Home: NextPage = () => {
                 withCredentials: true
             }).then(
               (response) => {
-                console.log(response.data)
+              
                 if (response.data == "NoCookie") {
-                  console.log("loginへ")
-                  router.push("/login")
+                    return (
+                       router.push("/login")
+                  )
+                 
                 } else {
-                  console.log("ok")
-                  router.push("/home")
+                 
+                    return (
+                         router.push("/home")
+                    )
+                 
                 }
               }
             )
 
-  })
+  },[])
 
 
     return (

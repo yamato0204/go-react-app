@@ -26,8 +26,9 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	e.GET("/cookie", c.GetCookie)
 
 
-	t := e.Group("/tasks")
-	t.POST("", c.CreateArticle)
+	t := e.Group("/record")
+	t.GET("/get", c.GetRecordMemo)
+	t.POST("/create", c.CreateRecord)
 
 
 //レコード関連

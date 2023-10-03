@@ -18,8 +18,9 @@ type Usecase interface {
 	Signup(user entity.User) (entity.UserResponse, error)
 	Login(user entity.User,c echo.Context) (string,string, error)
 
-	CreateArticle(article entity.Article) (entity.ArticleResponse, error)
+	CreateRecord(article entity.Records) (entity.RecordsResponse, error)
 	GetSession(c echo.Context, CookieKey string)(string, error)
+	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 }
 
 type usecase struct {
@@ -82,18 +83,21 @@ func (u *usecase) Login(user entity.User, c echo.Context) (string,string, error)
 	return cookieKey, redisKey, nil
 }
 
-func (u *usecase) CreateArticle(article entity.Article) (entity.ArticleResponse, error) {
+func (u *usecase) CreateRecord(record entity.Records) (entity.RecordsResponse, error) {
 
-	if err := u.sh.CreateArticle(&article);  err != nil {
-		return entity.ArticleResponse{}, err
+	record.ID = uuid.New().String()
+	
+
+	err := u.sh.CreateRecord(&record);  
+	if err != nil {
+		return entity.RecordsResponse{}, err
 	}
 
-	resArticle := entity.ArticleResponse{
-		ID: article.ID,
-		Title: article.Title,
+	resRecord := entity.RecordsResponse{
+		Memo: record.Memo,
 	}
 
-	return resArticle, nil
+	return resRecord, err
 }
 
 func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
@@ -126,6 +130,30 @@ func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
 
 
 }
+
+func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error) {
+	record := []entity.Records{}
+
+	if err := u.sh.GetRecordMemo(&record, userId);  err != nil {
+		return nil, err
+	}
+
+	resRecord := []entity.RecordsMemoResponse{}
+	for _, v := range record {
+		t := entity.RecordsMemoResponse{
+			ID: v.ID,
+			Memo: v.Memo,
+			Duration: v.Duration,
+			UserId: v.UserId,
+			CreatedAt: v.CreatedAt,
+
+		}
+
+		resRecord = append(resRecord, t)
+	}
+	return resRecord, nil
+} 
+
 
 
 

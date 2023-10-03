@@ -30,10 +30,25 @@ type ArticleResponse struct {
 	Title string  `json:"title"`
 }
 
-type activity_records struct {
-	ID  string
-	Memo string
-	duration int
-	date int
+type RecordsResponse struct {
+	
+	Memo string  `json:"memo"`
+}
+
+type Records struct {
+	ID  string   `json:"id"`
+	Memo string  `json:"memo"`
+	Duration int  `json:"duration,string"`
+	CreatedAt time.Time `json:"created_at"`
+	UserId    string    `json:"user_id" gorm:"not null"`
+
+}
+
+type RecordsMemoResponse struct {
+	ID  string   `json:"id"`
+	Memo string  `json:"memo"`
+	Duration int  `json:"duration,string"`
+	CreatedAt time.Time `json:"created_at"`
+	UserId    string    `json:"user_id" gorm:"not null"`
 
 }

@@ -9,7 +9,8 @@ type SqlHandler interface {
 	
 	CreateUser(user *entity.User) error
 	GetUserByEmail(user *entity.User, email string) error
-	CreateArticle(Article *entity.Article) error
+	CreateRecord(record *entity.Records) error
+	GetRecordMemo(record *[]entity.Records, userId string) error 
 }
 
 type sqlHandler struct {
@@ -38,8 +39,15 @@ func (s *sqlHandler)GetUserByEmail(user *entity.User, email string) error {
 	return nil
  }
 
- func (s *sqlHandler)CreateArticle(article *entity.Article) error {
-	if err := s.db.Create(article).Error; err != nil {
+ func (s *sqlHandler)CreateRecord(record *entity.Records) error {
+	if err := s.db.Create(record).Error; err != nil {
+		return err
+	}
+	return nil
+ }
+
+ func (s *sqlHandler)GetRecordMemo(record *[]entity.Records, userId string) error {
+	if err := s.db.Joins("User").Where("user_id=?", userId).Order("created_at").Find(record).Error; err != nil {
 		return err
 	}
 	return nil

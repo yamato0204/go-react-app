@@ -1,8 +1,9 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
-	"os"
+
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -14,8 +15,9 @@ type Controller interface {
 
 	Signup(c echo.Context) error
 	Login(c echo.Context) error
-
-	CreateArticle(c echo.Context) error
+	GetCookie(c echo.Context) error
+	GetRecordMemo(c echo.Context) error
+	CreateRecord(c echo.Context) error
 
 }
 
@@ -50,6 +52,7 @@ func (cc *controller) Login(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 	
+	
 	cookieKey, redisKey, err := cc.u.Login(user, c)
 	if err != nil {
 		return err
@@ -61,33 +64,71 @@ func (cc *controller) Login(c echo.Context) error {
 	cookie.Expires = time.Now().Add(24 * time.Hour)
 	//cookie.Secure = true
 	cookie.HttpOnly = true
-    c.SetCookie(cookie)
+	cookie.Path = "/"
+	cookie.Domain = "localhost:3000"
+	//cookie.SameSite = http.SameSiteNoneMode
+     c.SetCookie(cookie)
 
-	return c.NoContent(http.StatusOK)
+	return c.String(http.StatusOK, cookie.Name)
 }
 
-func (cc *controller)CreateArticle(c echo.Context) error {
+func (cc *controller)CreateRecord(c echo.Context) error {
 
 // sessionがあるのか確認
-  cookieKey := os.Getenv("LOGIN_USER_ID_KEY")
-  userId, err := cc.u.GetSession(c,cookieKey)
-  if err != nil {
-	return c.JSON(http.StatusBadRequest, "")
+record := entity.Records{}
+  if err :=  c.Bind(&record); err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
   }
 
+  cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+
+  fmt.Println(userId)
+
+   fmt.Println(err)
 //cookieからsessionIDを取り出し、userIDを取得
-  article := entity.Article{}
-  article.UserId = userId
-  articleRes, err := cc.u.CreateArticle(article)
+ 
+ record.UserId = userId
+ RecordRes, err := cc.u.CreateRecord(record)
 
   if err != nil {
 	return c.JSON(http.StatusInternalServerError, err.Error())
   }
 
-  return c.JSON(http.StatusCreated, articleRes)
+  return c.JSON(http.StatusCreated, RecordRes)
 
 }
 
+func (cc *controller)GetCookie(c echo.Context) error {
+	_, err := c.Cookie("loginUserIdKey")
+
+	if err != nil {
+		return c.String(http.StatusOK, "NoCookie")
+	}
+
+	//fmt.Println(cookie.Value)
+	
+	return c.String(http.StatusOK, "read a cookie")
+
+}
+
+func (cc *controller)GetRecordMemo(c echo.Context) error {
+
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
 
 
+  resRecord, err := cc.u.GetRecordMemo(userId)
 
+  if err != nil {
+	return c.JSON(http.StatusInternalServerError, err.Error())
+  }
+
+  return c.JSON(http.StatusOK, resRecord)
+}

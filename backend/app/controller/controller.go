@@ -65,7 +65,7 @@ func (cc *controller) Login(c echo.Context) error {
 	//cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.Path = "/"
-	cookie.Domain = "localhost:3000"
+	cookie.Domain = "localhost"
 	//cookie.SameSite = http.SameSiteNoneMode
      c.SetCookie(cookie)
 
@@ -119,16 +119,17 @@ func (cc *controller)GetRecordMemo(c echo.Context) error {
 
 	cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
+  fmt.Println(userId)
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
-
-
   resRecord, err := cc.u.GetRecordMemo(userId)
 
+  fmt.Println(err)
   if err != nil {
 	return c.JSON(http.StatusInternalServerError, err.Error())
   }
 
   return c.JSON(http.StatusOK, resRecord)
 }
+

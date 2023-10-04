@@ -2,6 +2,7 @@ import ContentsPage from "@/components/Layout/HomeLayout";
 import Layout from "@/components/Layout/Layout";
 import RecordPage from "@/components/Layout/RecordLayout";
 import { client } from "@/libs/axios";
+import { Box } from "@chakra-ui/react";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -29,13 +30,20 @@ const Home: NextPage = () => {
               }
             )
 
-  },[])
+  }, [])
+    
+    
+    
 
 
     return (
+     
         <Layout>
-            <RecordPage/>  
-       </Layout>
+          
+                <RecordPage />  
+              
+            </Layout>
+          
     );
 }
 

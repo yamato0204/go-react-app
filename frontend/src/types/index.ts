@@ -5,6 +5,7 @@ export type Credential = {
 
 
 export type Record = {
+    id: string
     memo: string
     duration: number
 }

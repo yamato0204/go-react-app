@@ -47,7 +47,7 @@ func (s *sqlHandler)GetUserByEmail(user *entity.User, email string) error {
  }
 
  func (s *sqlHandler)GetRecordMemo(record *[]entity.Records, userId string) error {
-	if err := s.db.Joins("User").Where("user_id=?", userId).Order("created_at").Find(record).Error; err != nil {
+	if err := s.db.Where("user_id=?", userId).Order("created_at").Find(record).Error; err != nil {
 		return err
 	}
 	return nil

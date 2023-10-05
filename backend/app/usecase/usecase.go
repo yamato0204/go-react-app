@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	
+	"fmt"
+	"time"
 
-	
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -21,6 +21,7 @@ type Usecase interface {
 	CreateRecord(article entity.Records) (entity.RecordsResponse, error)
 	GetSession(c echo.Context, CookieKey string)(string, error)
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
+	GetChartData(userId string) ([]entity.ChartDataResponse, error)
 }
 
 type usecase struct {
@@ -111,24 +112,17 @@ func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return redisValue, nil
-
-
 	//  cookie, err := c.Cookie(CookieKey); 
 	//  if err != nil {
 	// 	return "", err
 	//  }
 	//redisKey := cookie.Value
-	
 
 	//全レコード取得
 	//レコード登録
 	//レコード削除
 	//
-
-
-
 }
 
 func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error) {
@@ -156,6 +150,58 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 
 
 
+func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error){
+
+	 ResDatas := []entity.ChartDataResponse{}
+	//今日取得 => where = 今日の分データ取得
+
+	today := time.Now()
+	fmt.Println(today)
+
+	for i := 0; i < 7; i++ {
+		date := today.AddDate(0, 0, -i)
+		day := date.Format("2006-01-02")//2020-10-04
+		fmt.Println(day)
+		allDuration, err := u.sh.GetChartData(day)
+		if err != nil {
+			return []entity.ChartDataResponse{}, err
+		}
+		durationInHours := float64(allDuration) / 60.0
+		ResDatas = append(ResDatas, entity.ChartDataResponse{
+			Day: day,
+			Duration: durationInHours } )
+		
+	}
+
+	return ResDatas, nil
+}
+	// 特定の日の分を全件取得し、合算する関数GetOnedayAllRecords(date)
+	
+
+	//この関数を7回繰り返す。　for i=1 i <= 7 {}
+
+
+
+
+
+	// dates := GetDateSort() //配列を格納
+
+	// for (date in date) {
+
+	// 	GetOnedayAllRecords(date)
+	// 	//その日のすべてのレコードを取得
+	// 	//足し算
+
+
+	// }
+
+
+	//分を時間に変換　（例　９０分->1.5）
+	//　七件分のデータをフロント側に送信
+	//レスポンせにid を振って送信
+	//ロジックはバックエンドで処理。
+
+	//最終的に欲しいレスポンス　日にちと、総時間
 
 
 	

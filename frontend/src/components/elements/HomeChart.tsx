@@ -5,19 +5,22 @@ Chart.register(...registerables)
 
 const HomeChart = () => {
 
+    const jstNow = new Date(Date.now() +
+        ((new Date().getTimezoneOffset() + (9 * 60)) * 60 * 1000));
+    console.log(jstNow)
+   
+    //分を時間変換し、y軸に代入。
+    //今日の日にち取得し、backに送る＝＞5日分の時間変換された時間データを取得
 
      const type =  'bar'
    const  data =  {
-  labels: ['9/12', '9/13', '9/14',],
+  labels: ['9/12','9/13'],
   datasets: [{
     label: "物理",
-    data: [70, 30, 30],
+    data: [1.5],
   },{
     label: "it",
-    data: [83, 90, 95],
-  },{
-    label: "英語",
-    data: [75, 85, 93,],
+    data: [6],
   }],
 }
     const options: {} = {

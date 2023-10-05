@@ -52,3 +52,9 @@ type RecordsMemoResponse struct {
 	UserId    string    `json:"user_id" gorm:"not null"`
 
 }
+
+type ChartDataResponse struct {
+	ID string `json:"id"`
+	Duration float64  `json:"duration,string"`
+	Day string  `json:"day"`
+}

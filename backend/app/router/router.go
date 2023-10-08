@@ -25,6 +25,7 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	e.POST("/login", c.Login)
 	e.GET("/cookie", c.GetCookie)
 	e.GET("/chartData", c.GetChartData)
+	e.GET("/todayDuration", c.GetTodayDuration)
 
 
 	t := e.Group("/record")

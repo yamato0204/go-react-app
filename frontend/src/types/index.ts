@@ -9,3 +9,9 @@ export type Record = {
     memo: string
     duration: number
 }
+
+export type ChartData = {
+  id: string
+  duration: number
+  day: string
+}

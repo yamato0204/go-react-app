@@ -19,6 +19,7 @@ type Controller interface {
 	GetRecordMemo(c echo.Context) error
 	CreateRecord(c echo.Context) error
 	GetChartData(c echo.Context) error
+	GetTodayDuration(c echo.Context) error
 }
 
 type controller struct {
@@ -142,5 +143,23 @@ func (cc *controller)GetChartData(c echo.Context) error {
   }
   resChartData, err := cc.u.GetChartData(userId)
   return c.JSON(http.StatusOK, resChartData)
+}
+
+func (cc *controller)GetTodayDuration(c echo.Context) error {
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  fmt.Println(userId)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+  resdata , err :=  cc.u.GetTodayDuration(userId)
+
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+	
+  }
+
+  return c.JSON(http.StatusOK, resdata)
+
 }
 

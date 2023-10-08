@@ -22,6 +22,7 @@ type Usecase interface {
 	GetSession(c echo.Context, CookieKey string)(string, error)
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
+	GetTodayDuration(userId string) (int, error)
 }
 
 type usecase struct {
@@ -156,13 +157,13 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 	//今日取得 => where = 今日の分データ取得
 
 	today := time.Now()
-	fmt.Println(today)
+	fmt.Println(userId)
 
 	for i := 0; i < 7; i++ {
 		date := today.AddDate(0, 0, -i)
 		day := date.Format("2006-01-02")//2020-10-04
-		fmt.Println(day)
-		allDuration, err := u.sh.GetChartData(day)
+		
+		allDuration, err := u.sh.GetChartData(day, userId)
 		if err != nil {
 			return []entity.ChartDataResponse{}, err
 		}
@@ -175,35 +176,32 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 
 	return ResDatas, nil
 }
-	// 特定の日の分を全件取得し、合算する関数GetOnedayAllRecords(date)
+
+func (u *usecase) GetTodayDuration(userId string) (int, error) {
+
+	loc, err := time.LoadLocation("Asia/Tokyo")
+    if err != nil {
+        return 0, err
+    }
+
+    // 現在の日本時間を取得
+    today := time.Now().In(loc)
+
+	day := today.Format("2006-01-02")
+	
+	allDuration, err := u.sh.GetTodayDuration(day, userId)
+	if err != nil {
+		return 0, err
+	}
+	return allDuration ,nil
+
+}
 	
 
-	//この関数を7回繰り返す。　for i=1 i <= 7 {}
+	
 
 
-
-
-
-	// dates := GetDateSort() //配列を格納
-
-	// for (date in date) {
-
-	// 	GetOnedayAllRecords(date)
-	// 	//その日のすべてのレコードを取得
-	// 	//足し算
-
-
-	// }
-
-
-	//分を時間に変換　（例　９０分->1.5）
-	//　七件分のデータをフロント側に送信
-	//レスポンせにid を振って送信
-	//ロジックはバックエンドで処理。
-
-	//最終的に欲しいレスポンス　日にちと、総時間
-
-
+	
 	
 
 

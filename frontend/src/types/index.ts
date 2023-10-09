@@ -15,3 +15,7 @@ export type ChartData = {
   duration: number
   day: string
 }
+
+export type TodayDuration = {
+  duration: number
+}

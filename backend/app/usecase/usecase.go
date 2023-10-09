@@ -156,8 +156,15 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 	 ResDatas := []entity.ChartDataResponse{}
 	//今日取得 => where = 今日の分データ取得
 
-	today := time.Now()
+	loc, err := time.LoadLocation("Asia/Tokyo")
+    if err != nil {
+        return []entity.ChartDataResponse{}, err
+    }
+
+
+	today := time.Now().In(loc)
 	fmt.Println(userId)
+	fmt.Println(today)
 
 	for i := 0; i < 7; i++ {
 		date := today.AddDate(0, 0, -i)

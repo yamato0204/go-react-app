@@ -15,6 +15,7 @@ const HomeChart = () => {
               
     }) 
 
+  console.log(records)
   
 
     if (status === 'loading') {
@@ -83,19 +84,36 @@ const HomeChart = () => {
     ]
   };
 
+  // const options = {
+  //   scales: {
+  //     x: {
+  //       stacked: true,
+  //     },
+  //     y: {
+  //       stacked: true,
+  //     }
+  //   },
+  //   responsive: false
+  // };
+  
   const options = {
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-      }
+  scales: {
+    x: {
+      stacked: true,
     },
-    responsive: false
-  };
-  
-  
+    y: {
+      stacked: true,
+      type: 'linear', // y軸のスケールタイプを指定します。linearは数値を表す軸です。
+      ticks: {
+        beginAtZero: true, // グラフの最小値を0から始める場合はtrueに設定します。
+        callback: function(value :any) {
+          return value + ' 時間'; // ラベルに単位（' 時間'）を追加します。
+        }
+      }
+    }
+  },
+  responsive: false
+};
   
   
   

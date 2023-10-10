@@ -1,5 +1,5 @@
 import { client } from "@/libs/axios";
-import { Credential } from "@/types";
+import { Credential, Register } from "@/types";
 import { useMutation} from "@tanstack/react-query";
 
 import { useRouter } from "next/router";
@@ -36,21 +36,25 @@ export const UseMutateAuth = () => {
     )
     const registerMutation = useMutation(
    
-        async (user: Credential) => 
+        async (user: Register) => 
             
             await client.post(`/register`, user).then(
                (response) => {
                     console.log(response.data)
+                 
                 }
             ),
         {
             onSuccess: () => {
              //   queryClient.getQueryData
                 console.log("ok")
+               
                 
             },
             onError: (err: any) => {
                 console.log(err)
+                return err
+                
             }
 
         }

@@ -27,10 +27,12 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	e.GET("/chartData", c.GetChartData)
 	e.GET("/todayDuration", c.GetTodayDuration)
 
-
 	t := e.Group("/record")
 	t.GET("/get", c.GetRecordMemo)
 	t.POST("/create", c.CreateRecord)
+
+	u := e.Group("/user")
+	u.GET("/get", c.GetUser)
 
 
 //レコード関連

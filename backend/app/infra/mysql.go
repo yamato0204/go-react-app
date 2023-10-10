@@ -17,6 +17,7 @@ type SqlHandler interface {
 	GetRecordMemo(record *[]entity.Records, userId string) error 
 	GetChartData( day string, userId string) (int ,error)
 	GetTodayDuration(day string,userId string ) (int , error)
+	GetUser(user *[]entity.User) error
 
 }
 
@@ -111,4 +112,11 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 	}
 
 	return 0, nil
+ }
+
+ func (s *sqlHandler) GetUser(user *[]entity.User) error {
+	if err := s.db.Order("created_at desc").Find(&user).Error; err != nil {
+		return err
+	}
+	return nil
  }

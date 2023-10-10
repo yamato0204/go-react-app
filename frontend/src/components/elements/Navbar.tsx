@@ -13,12 +13,18 @@ const Navbar = () => {
         </Box>
       </NextLink>
      
-          <NextLink href="/record" passHref>
+          <Link href="/record"  >
       <Box mr={8}>
       <Text as='b' color="black" >積み上げ記録</Text>
         </Box>
-      </NextLink>
-      <Spacer />
+      </Link>
+
+        <Link href="/user" >
+      <Box mr={8}>
+      <Text as='b' color="black" >ユーザーを探す</Text>
+        </Box>
+      </Link>
+     
 {/* 
       {AuthState ? (
 

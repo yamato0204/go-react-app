@@ -19,6 +19,7 @@ const RecordPage = () => {
         return data
               
     }) 
+    console.log(records)
 
 
 

@@ -7,6 +7,7 @@ type User struct {
 	ID        string     `json:"id"`
 	Email     string    `json:"email" gorm:"unique"`
 	Password  string    `json:"password"`
+	Name      string    `json:"name"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
@@ -14,7 +15,13 @@ type User struct {
 
 type UserResponse struct {
 	ID    string   `json:"id"`
-	Email string `json:"email" gorm:"unique"`
+	Email string `json:"email"`
+	Name string `json:"name"`
+}
+
+type UserPageResponse struct {
+	ID    string   `json:"id"`
+	Name string `json:"name"`
 }
 
 type Article struct {

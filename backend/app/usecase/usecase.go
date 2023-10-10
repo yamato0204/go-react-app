@@ -23,6 +23,7 @@ type Usecase interface {
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
 	GetTodayDuration(userId string) (int, error)
+	GetUser() ([]entity.UserPageResponse, error)
 }
 
 type usecase struct {
@@ -40,11 +41,11 @@ func NewUsecase(sh infra.SqlHandler, rh infra.RedisHandler) Usecase {
 
 
 func (u *usecase)Signup(user entity.User) (entity.UserResponse, error) {	
-	err := u.sh.GetUserByEmail(&user, user.Email)
-	if err == nil {
-		return entity.UserResponse{}, err
-	}
-
+	
+	// err := u.sh.GetUserByEmail(&user, user.Email);
+	// if err == nil {
+	// 	return entity.UserResponse{}, err
+	// }
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		return entity.UserResponse{}, err
@@ -53,7 +54,9 @@ func (u *usecase)Signup(user entity.User) (entity.UserResponse, error) {
 	newUser := entity.User{
 		ID: uuid.New().String(),
 		Email: user.Email,
-		Password: string(hash)}
+		Password: string(hash),
+		Name: user.Name,
+	}
 		
 	err = u.sh.CreateUser(&newUser)
 	if err != nil {
@@ -203,6 +206,29 @@ func (u *usecase) GetTodayDuration(userId string) (int, error) {
 	return allDuration ,nil
 
 }
+
+func (u *usecase) GetUser() ([]entity.UserPageResponse, error) {
+
+	users := []entity.User{}
+
+	if err := u.sh.GetUser(&users);  err != nil {
+		return nil, err
+	}
+
+	resUsers := []entity.UserPageResponse{}
+	for _, v := range users {
+		t := entity.UserPageResponse{
+			ID: v.ID,
+			Name: v.Name,
+
+		}
+
+		resUsers = append(resUsers, t)
+	}
+	return resUsers, nil
+}
+
+
 	
 
 	

@@ -27,5 +27,10 @@ export type TodayDuration = {
 }
 
 export type UserData = {
+  id: number
   name: string
+}
+
+export type UserID = {
+  id: number
 }

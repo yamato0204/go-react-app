@@ -32,7 +32,8 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	t.POST("/create", c.CreateRecord)
 
 	u := e.Group("/user")
-	u.GET("/get", c.GetUser)
+	u.GET("/get", c.GetUsers)
+	u.GET("/show", c.GetUser)
 
 
 //レコード関連

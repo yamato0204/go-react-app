@@ -23,7 +23,7 @@ type Usecase interface {
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
 	GetTodayDuration(userId string) (int, error)
-	GetUser() ([]entity.UserPageResponse, error)
+	GetUsers() ([]entity.UserPageResponse, error)
 }
 
 type usecase struct {
@@ -207,7 +207,7 @@ func (u *usecase) GetTodayDuration(userId string) (int, error) {
 
 }
 
-func (u *usecase) GetUser() ([]entity.UserPageResponse, error) {
+func (u *usecase) GetUsers() ([]entity.UserPageResponse, error) {
 
 	users := []entity.User{}
 

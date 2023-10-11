@@ -1,5 +1,6 @@
 import { Record, UserData } from "@/types";
 import { Box, Card, CardBody, CardHeader, Heading, Image, Stack, StackDivider, Text } from "@chakra-ui/react";
+import Link from "next/link";
 
 
 interface RecordCardProps {
@@ -25,7 +26,7 @@ const UserCard: React.FC<RecordCardProps> = ({ user }) => {
        
         <Box>
         <Heading size='md' textTransform='uppercase'>
-         {user.name}
+         <Link href={`/user/${user.id}`}>{user.name}</Link>
         </Heading>
        
       

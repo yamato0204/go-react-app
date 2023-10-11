@@ -2,7 +2,7 @@ import HomeChart from '../elements/HomeChart';
 import { Box, Center, Container, Grid, useToast } from '@chakra-ui/react';
 import RecordCard from '../elements/RecordCard';
 import { useQuery } from '@tanstack/react-query';
-import { Record } from '@/types';
+import { Record, UserData } from '@/types';
 import axios from 'axios';
 import { error } from 'console';
 import { client } from '@/libs/axios';
@@ -17,7 +17,7 @@ const UserPage = () => {
    // const addToast = useToast()
 
     const { data:users, status}  = useQuery(['records'], async () => {
-        const { data } = await client.get<Record[]>('user/get', { withCredentials: true })
+        const { data } = await client.get<UserData[]>('user/get', { withCredentials: true })
         return data
               
     }) 
@@ -40,7 +40,7 @@ const UserPage = () => {
 //ここで、for文
         <Container>
         <Serch />
-            {users.map((user:Record) => (
+            {users.map((user:UserData) => (
                 <UserCard  key={user.id} user={user} />
             ))}
            

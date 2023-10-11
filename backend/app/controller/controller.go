@@ -20,7 +20,8 @@ type Controller interface {
 	CreateRecord(c echo.Context) error
 	GetChartData(c echo.Context) error
 	GetTodayDuration(c echo.Context) error
-	GetUser(c echo.Context)error
+	GetUsers(c echo.Context)error
+	GetUser(c echo.Context) error
 }
 
 type controller struct {
@@ -165,7 +166,7 @@ func (cc *controller)GetTodayDuration(c echo.Context) error {
 }
 
 
-func (cc *controller)GetUser(c echo.Context)error {
+func (cc *controller)GetUsers(c echo.Context)error {
 
 
 // 		cookieKey := "loginUserIdKey"
@@ -174,7 +175,7 @@ func (cc *controller)GetUser(c echo.Context)error {
 //   if err != nil {
 // 	return c.JSON(http.StatusBadRequest, err.Error())
 //   }
-  resUsers, err := cc.u.GetUser()
+  resUsers, err := cc.u.GetUsers()
 
   fmt.Println(err)
   if err != nil {
@@ -182,4 +183,17 @@ func (cc *controller)GetUser(c echo.Context)error {
   }
 
   return c.JSON(http.StatusOK, resUsers)
+}
+
+func (cc *controller)GetUser(c echo.Context) error {
+	userId := c.QueryParam("ID")
+
+	resChartData, err := cc.u.GetChartData(userId) 
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resChartData)
+
+
 }

@@ -17,7 +17,8 @@ type SqlHandler interface {
 	GetRecordMemo(record *[]entity.Records, userId string) error 
 	GetChartData( day string, userId string) (int ,error)
 	GetTodayDuration(day string,userId string ) (int , error)
-	GetUser(user *[]entity.User) error
+	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
+	GetUser(user *[]entity.User)  error
 
 }
 
@@ -112,6 +113,19 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 	}
 
 	return 0, nil
+ }
+
+ func (s *sqlHandler) GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int,  error) {
+	var total_duration int
+
+	if err := s.db.Model(&entity.Records{}).Select("SUM(duration) as total_duration").
+	Where("user_id = ? AND created_at BETWEEN ? AND ?", userId, beforeDay, today).
+	Scan(&total_duration).Error; err != nil {
+		return 2, err
+	}
+
+	return total_duration, nil
+
  }
 
  func (s *sqlHandler) GetUser(user *[]entity.User) error {

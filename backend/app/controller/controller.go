@@ -22,6 +22,7 @@ type Controller interface {
 	GetTodayDuration(c echo.Context) error
 	GetUsers(c echo.Context)error
 	GetUser(c echo.Context) error
+	GetWeekDuration(c echo.Context) error
 }
 
 type controller struct {
@@ -165,7 +166,24 @@ func (cc *controller)GetTodayDuration(c echo.Context) error {
 
 }
 
+func (cc *controller) GetWeekDuration(c echo.Context) error {
 
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+
+  resdata , err :=  cc.u.GetWeekDuration(userId)
+
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+	
+  }
+
+  return c.JSON(http.StatusOK, resdata)
+
+}
 func (cc *controller)GetUsers(c echo.Context)error {
 
 
@@ -197,3 +215,5 @@ func (cc *controller)GetUser(c echo.Context) error {
 
 
 }
+
+

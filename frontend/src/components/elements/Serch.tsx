@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 
 import {  IconButton, Input, InputGroup,  } from '@chakra-ui/react'
 import { SearchIcon } from '@chakra-ui/icons';
+import { FaMagnifyingGlass } from "react-icons/fa6";
 
 const Serch = () => {
 
@@ -9,9 +10,9 @@ const Serch = () => {
     return (
 
       <InputGroup m={4} w={2/3} >
-      <IconButton aria-label='Search database' icon={<SearchIcon />} />
+      < FaMagnifyingGlass size={36} mr={8} />
       <Input
-        type="text" placeholder="検索"
+        ml={4} type="text" placeholder="検索"
       />
     </InputGroup>
 

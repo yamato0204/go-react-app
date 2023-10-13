@@ -24,6 +24,7 @@ type Usecase interface {
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
 	GetTodayDuration(userId string) (int, error)
 	GetUsers() ([]entity.UserPageResponse, error)
+    GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 }
 
 type usecase struct {
@@ -193,7 +194,6 @@ func (u *usecase) GetTodayDuration(userId string) (int, error) {
     if err != nil {
         return 0, err
     }
-
     // 現在の日本時間を取得
     today := time.Now().In(loc)
 
@@ -205,6 +205,36 @@ func (u *usecase) GetTodayDuration(userId string) (int, error) {
 	}
 	return allDuration ,nil
 
+}
+
+func (u *usecase) GetWeekDuration(userId string) (entity.WeekDurationResponse, error) {
+
+	ResData := entity.WeekDurationResponse{}
+	loc, err := time.LoadLocation("Asia/Tokyo")
+
+    if err != nil {
+        return entity.WeekDurationResponse{}, err
+    }
+    // 現在の日本時間を取得
+    today := time.Now().In(loc)
+	weekAgo := today.AddDate(0, 0, -6)
+	weekAgo = time.Date(weekAgo.Year(), weekAgo.Month(), weekAgo.Day(), 0, 0, 0, 0, loc)
+	totalDulation, err := u.sh.GetWeekDuration(weekAgo, today, userId)
+
+	 if err != nil {
+		return entity.WeekDurationResponse{}, err
+	 }
+	 hours, minutes := convertMinutesToHoursAndMinutes(totalDulation)
+
+	 ResData.Hour = hours
+	 ResData.Minute = minutes
+	 return ResData, nil
+}
+
+func convertMinutesToHoursAndMinutes(minutes int) (int, int) {
+    hours := minutes / 60
+    remainingMinutes := minutes % 60
+    return hours, remainingMinutes
 }
 
 func (u *usecase) GetUsers() ([]entity.UserPageResponse, error) {

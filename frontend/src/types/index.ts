@@ -26,6 +26,11 @@ export type TodayDuration = {
   duration: number
 }
 
+export type WeekDuration = {
+  hour: number;
+  minutes: number;
+}
+
 export type UserData = {
   id: number
   name: string
@@ -34,3 +39,4 @@ export type UserData = {
 export type UserID = {
   id: number
 }
+

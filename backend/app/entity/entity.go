@@ -65,3 +65,8 @@ type ChartDataResponse struct {
 	Duration float64  `json:"duration,string"`
 	Day string  `json:"day"`
 }
+
+type WeekDurationResponse struct {
+	Hour int `json:"hour,string"`
+	Minute int `json:"minutes,string"`
+}

@@ -1,5 +1,5 @@
 import HomeChart from '../elements/HomeChart';
-import { Box, Center, Container, Grid, useToast } from '@chakra-ui/react';
+import { Box, Center, Container, Flex, Grid, Text, useToast } from '@chakra-ui/react';
 import RecordCard from '../elements/RecordCard';
 import { useQuery } from '@tanstack/react-query';
 import { Record, UserData } from '@/types';
@@ -8,6 +8,8 @@ import { error } from 'console';
 import { client } from '@/libs/axios';
 import UserCard from '../elements/UserCard';
 import Serch from '../elements/Serch';
+import { useUser } from '@/hooks/userContext';
+import RankingCard from '../elements/RankingCard';
 
 
 
@@ -15,7 +17,7 @@ import Serch from '../elements/Serch';
 
 
 
-const UserPage = () => {
+const UserPage: React.FC = () => {
    // const addToast = useToast()
 
     const { data:users, status}  = useQuery(['records'], async () => {
@@ -35,23 +37,71 @@ const UserPage = () => {
         return <div>登録されたRecordはありません</div>
     }
 
+    const stateUser: any = useUser()
+    const filteredData = users.filter(user => {
+        const userName = user.name || ''; // user.nameがnullの場合に備えてデフォルト値を設定
+        return userName.toLowerCase().includes(stateUser?.toLowerCase() || ''); // stateUserがnullの場合に備えてデフォルト値を設定
+    });
+
 
 
     return (
 
-//ここで、for文
-        <Container>
-        <Serch />
-            {users.map((user:UserData) => (
-                <UserCard  key={user.id} user={user} />
-            ))}
-           
 
-         
-       </Container>
+        <Container >
+            
+            <Serch />
+            <Box width="100%">
+                
+                <Box display={{ md: "flex"}} justifyContent={{base:"center",  md: 'end'}} alignItems={{md: 'end'}} width={{md: '100%'}} >
+    
+                    <Box ml={{ md: "-40"}} width="100%"  mr={{ md: "10"}}>
+                        <RankingCard  />
+                        </Box>
+               <Box >
+                    {
+                        filteredData.map((user: UserData) => (
+                            <UserCard  key={user.id} user={user}/>
+                        ))
+                    }
+                   </Box>
+            </Box>
+            </Box>
 
-        
+            </Container>
+    
     )
+
+
+
+
+
+
+
+    // const stateUser = useUser()
+    // const filteredData = users.filter( user => user.name.toLowerCase()
+    // .includes(stateUser.toLowerCase()));
+    
+    // return (
+    //     <>
+    //     <Serch />
+    //     <Box display="flex" justifyContent="center" paddingTop="60px">
+    //   {filteredData.length === 0 ? (
+    //     <Text fontSize="xl">対象の商品が存在しません</Text>
+    //   ) : (
+    //     <Grid templateColumns={{ sm: "repeat(1, 1fr)", md: "repeat(3, 3fr)" }} gap={10}>
+    //       {filteredData.map((user) => (
+    //         <UserCard key={user.id} user={user} />
+    //       ))}
+    //     </Grid>
+    //   )}
+    //         </Box>   
+    // </>        
+        
+    //);
+
+
+
 
    
       

@@ -1,6 +1,8 @@
 import Layout from "@/components/Layout/Layout"
 import UserLayout from "@/components/Layout/UserLayout";
+import { UserProvider } from "@/hooks/userContext";
 import { client } from "@/libs/axios"
+import { Box } from "@chakra-ui/layout";
 import { NextPage } from "next"
 
 
@@ -40,7 +42,12 @@ const UserIndex: NextPage = () => {
 
     return (
         <Layout>
-            <UserLayout />
+            <UserProvider>
+                
+                    <UserLayout />
+                
+            </UserProvider>
+            
        </Layout>
     );
 

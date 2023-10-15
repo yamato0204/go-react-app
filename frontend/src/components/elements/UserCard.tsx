@@ -8,8 +8,8 @@ interface RecordCardProps {
 }
 const UserCard: React.FC<RecordCardProps> = ({ user }) => {
     return (
-        <Box ml={20} >
-           <Card  mt={4} w="80%" bg={"gray.100"}>
+        <Box ml={10} width={{ md:"100%"}} >
+           <Card  mt={4}  width={{ md:"100%"}} bg={"gray.100"}>
   <CardHeader>
                     <Heading size='md'>
                         <Image

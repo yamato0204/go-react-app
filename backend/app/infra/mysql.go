@@ -80,11 +80,9 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 
  func (s *sqlHandler)GetChartData(day string, userId string) (int, error) {
 	// var totalDuration int
-
 	// if err := s.db.Model(&entity.Records{}).Where("DATE(created_at) = ?","2023-10-24").Select("SUM(duration) as total_duration").Scan(&totalDuration).Error; err != nil {
 	// 	return 0 ,err
 	// }
-
 	// return totalDuration , nil
 	var totalDuration sql.NullInt64
 
@@ -104,7 +102,8 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 
 	var totalDuration sql.NullInt64
 
-	if err := s.db.Model(&entity.Records{}).Where("DATE(created_at) = ? AND user_id = ?", day, userId).Select("SUM(duration) as total_duration").Scan(&totalDuration).Error; err != nil {
+	if err := s.db.Model(&entity.Records{}).Where("DATE(created_at) = ? AND user_id = ?", day, userId).Select("SUM(duration) as total_duration").
+	Scan(&totalDuration).Error; err != nil {
 		return 0, err
 	}
 

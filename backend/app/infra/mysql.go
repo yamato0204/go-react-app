@@ -19,6 +19,7 @@ type SqlHandler interface {
 	GetTodayDuration(day string,userId string ) (int , error)
 	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
 	GetUser(user *[]entity.User)  error
+	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
 
 }
 
@@ -128,10 +129,32 @@ loc, err := time.LoadLocation("Asia/Tokyo")
  }
 
 
- func(s *sqlHandler) GetRankingData(beforeDay time.Time, today time.Time) {
+ func(s *sqlHandler) GetRankingData(RankData *[]entity.GetRankingData, beforeDay time.Time, today time.Time) error {
 
-	
+// 	if err := s.db.Table("records r").Select("u.name as user_name, r.user_id, SUM(r.duration) as total_duration").
+// 	Joins("INNER JOIN users u ON r.user_id = u.id").
+// 	Where("r.created_at BETWEEN ? AND ?", beforeDay, today).
+// 	Group("r.user_id").
+// 	Order("total_duration DESC").
+// 	Limit(3).
+//     Scan(&RankData).Error; err != nil {
+// 		return err
+// 	}	
 
+// 	return nil
+//  }
+
+if err := s.db.Table("records r").Select("u.name as Name, r.user_id as UserID, SUM(r.duration) as Duration").
+	Joins("INNER JOIN users u ON r.user_id = u.id").
+	Where("r.created_at BETWEEN ? AND ?", beforeDay, today).
+	Group("r.user_id").
+	Order("Duration DESC").
+	Limit(3).
+	Scan(&RankData).Error; err != nil {
+	return err
+}
+
+return nil
  }
 
 

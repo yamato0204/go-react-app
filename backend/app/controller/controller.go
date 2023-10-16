@@ -23,7 +23,7 @@ type Controller interface {
 	GetUsers(c echo.Context)error
 	GetUser(c echo.Context) error
 	GetWeekDuration(c echo.Context) error
-	//GetRankingData(c echo.Context) error
+	GetRankingData(c echo.Context) error
 }
 
 type controller struct {
@@ -217,15 +217,15 @@ func (cc *controller)GetUser(c echo.Context) error {
 
 }
 
-// func (cc *controller ) GetRankingData(c echo.Context) error {
+func (cc *controller ) GetRankingData(c echo.Context) error {
 
-	// resRankingData, err := cc.u.GetRankingData() 
-	// if err != nil {
-	// 	return c.JSON(http.StatusBadRequest, err.Error())
-	// }
+	resRankingData, err := cc.u.GetRankingData() 
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
 
-	// return c.JSON(http.StatusOK, resRankingData)
+	return c.JSON(http.StatusOK, resRankingData)
 
 
-//} 
+} 
 

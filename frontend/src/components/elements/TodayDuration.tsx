@@ -15,7 +15,7 @@ const TodayDuration: React.FC = () => {
   }
 
   if (status === 'error' || !duration) {
-    return <div>Error loading data</div>; // エラーが発生した場合やデータが存在しない場合のエラーメッセージを表示
+    return <Text fontSize='4xl' as='b'>今日の積み上げ０分</Text>; // エラーが発生した場合やデータが存在しない場合のエラーメッセージを表示
   }
 
   // duration が存在することが保証されたので、安全に表示できます

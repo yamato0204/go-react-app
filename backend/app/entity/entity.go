@@ -71,11 +71,24 @@ type WeekDurationResponse struct {
 	Minute int `json:"minutes,string"`
 }
 
- type RankingDataResponse struct {
-	Ranking int `json:"ranking,string"`
-	ID    string   `json:"id"`
-	Name string `json:"name"`
-	Hour int `json:"hour,string"`
-	Minute int `json:"minutes,string"`
+//  type RankingDataResponse struct {
+// 	Ranking int `json:"ranking,string"`
+// 	ID    string   `json:"id"`
+// 	Name string `json:"name"`
+// 	Hour int `json:"hour,string"`
+// 	Minute int `json:"minutes,string"`
 
+//  }
+
+ type RankingDataResponse struct {
+	UserID string
+	Duration int
+	Name string
+
+ }
+
+ type GetRankingData struct {
+	UserID string
+	Duration int
+	Name string
  }

@@ -40,3 +40,11 @@ export type UserID = {
   id: number
 }
 
+export type RankingData = {
+  user_id: number
+   hour: number;
+  minutes: number;
+  name: string
+  
+
+}

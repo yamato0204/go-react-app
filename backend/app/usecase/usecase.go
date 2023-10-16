@@ -289,9 +289,12 @@ func (u *usecase) GetRankingData() ([]entity.RankingDataResponse, error) {
 
 	res := []entity.RankingDataResponse{}
 	for _, v := range rankData {
+
+		 hours, minutes :=convertMinutesToHoursAndMinutes(v.Duration)
 		t := entity.RankingDataResponse{
 			UserID: v.UserID,
-			Duration: v.Duration,
+			Hour: hours,
+			Minute: minutes,
 			Name: v.Name,
 
 		}

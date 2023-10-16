@@ -81,9 +81,10 @@ type WeekDurationResponse struct {
 //  }
 
  type RankingDataResponse struct {
-	UserID string
-	Duration int
-	Name string
+	UserID string  `json:"user_id" gorm:"not null"`
+	Name string  `json:"name"`
+	Hour int  `json:"hour,string"`
+	Minute int  `json:"minutes,string"`
 
  }
 

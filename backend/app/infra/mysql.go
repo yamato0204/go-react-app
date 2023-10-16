@@ -127,9 +127,19 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 
  }
 
+
+ func(s *sqlHandler) GetRankingData(beforeDay time.Time, today time.Time) {
+
+	
+
+ }
+
+
  func (s *sqlHandler) GetUser(user *[]entity.User) error {
 	if err := s.db.Order("created_at desc").Find(&user).Error; err != nil {
 		return err
 	}
 	return nil
  }
+
+ 

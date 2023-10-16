@@ -25,6 +25,7 @@ type Usecase interface {
 	GetTodayDuration(userId string) (int, error)
 	GetUsers() ([]entity.UserPageResponse, error)
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
+	//GetRankingData() ([]entity.RankingDataResponse, error) 
 }
 
 type usecase struct {
@@ -257,6 +258,40 @@ func (u *usecase) GetUsers() ([]entity.UserPageResponse, error) {
 	}
 	return resUsers, nil
 }
+
+// func (u *usecase) GetRankingData() ([]entity.RankingDataResponse, error) {
+
+// 	//現在時刻取得
+// 	//一週間の期間の中で、最もdurationの多いuserを三人取得(userId)
+
+// 	//リファクタ可
+
+// 	var UserData []string
+// 	loc, err := time.LoadLocation("Asia/Tokyo")
+
+//     if err != nil {
+//         return []entity.RankingDataResponse{}, err
+//     }
+//     // 現在の日本時間を取得
+//     today := time.Now().In(loc)
+// 	weekAgo := today.AddDate(0, 0, -6)
+// 	weekAgo = time.Date(weekAgo.Year(), weekAgo.Month(), weekAgo.Day(), 0, 0, 0, 0, loc)
+
+// 	UserData, err = u.sh.GetRankingUser(weekAgo, today)
+
+
+
+
+// 	//res =  GetRankingUser()
+
+
+
+
+
+// 	//三人分　Getdurationweek
+
+
+// }
 
 
 	

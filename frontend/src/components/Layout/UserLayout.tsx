@@ -46,23 +46,25 @@ const UserPage: React.FC = () => {
 
 
     return (
-
+//align-items　消したら、上部に固定された
 
         <Container >
             
             <Serch />
-            <Box width="100%">
+            <Box width="100%" position={{ md: "sticky" }} top={{ md: 0 }} zIndex={{ md :"docked"}}  >
                 
-                <Box display={{ md: "flex"}} justifyContent={{base:"center",  md: 'end'}} alignItems={{md: 'end'}} width={{md: '100%'}} >
-    
-                    <Box ml={{ md: "-40"}} width="100%"  mr={{ md: "10"}}>
-                        <RankingCard  />
-                        </Box>
-               <Box >
+                <Box display={{ md: "flex" }} justifyContent={{ base: "center", md: 'end' }}
+                     width={{ md: '100%' }} >
+                    
+                    <Box ml={{ md: "-60" }} width="100%" mr={{ md: "10" }} >
+                        <RankingCard />
+                    </Box>
+
+                    
+               <Box width="80%" pl={4} >
                     {
                         filteredData.map((user: UserData) => (
-                            <UserCard  key={user.id} user={user}/>
-                        ))
+                            <UserCard  key={user.id} user={user}/>   ))
                     }
                    </Box>
             </Box>
@@ -70,6 +72,34 @@ const UserPage: React.FC = () => {
 
             </Container>
     
+
+
+
+    //    <Box >
+    // <Serch />
+    // <Box display={{ md: "flex" }} justifyContent={{ base: "center", md: 'end' }}  width={{ md: '100%' }} position={{ md: "sticky" }} top="0" zIndex="docked">
+
+    //     <Box ml={{ md: "-40" }} width="100%" mr={{ md: "10" }} position={{ md: "sticky" }} top="0" zIndex="docked">
+    //         <RankingCard />
+    //     </Box>
+
+    //     <Box width="100%">
+    //         {
+    //             filteredData.map((user: UserData) => (
+    //                 <UserCard key={user.id} user={user} />
+    //             ))
+    //         }
+    //     </Box>
+    //         </Box>
+    //         </Box>
+
+
+
+
+
+
+
+
     )
 
 

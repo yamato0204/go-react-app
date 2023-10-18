@@ -3,25 +3,25 @@ package infra
 import (
 	"fmt"
 	"log"
-	"os"
+	// "os"
 
-	"github.com/joho/godotenv"
+	// "github.com/joho/godotenv"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 func NewDB() *gorm.DB {
-	err := godotenv.Load(".env")
+	// err := godotenv.Load(".env")
 
-	if err != nil {
-		fmt.Printf("読み込み出来ませんでした: %v", err)
-	} 
-	user := os.Getenv("MYSQL_USER")
-	pass:= os.Getenv("MYSQL_ROOT_PASSWORD")
-	database := os.Getenv("MYSQL_DATABASE")
+	// if err != nil {
+	// 	fmt.Printf("読み込み出来ませんでした: %v", err)
+	// } 
+	// user := os.Getenv("MYSQL_USER")
+	// pass:= os.Getenv("MYSQL_ROOT_PASSWORD")
+	// database := os.Getenv("MYSQL_DATABASE")
 
 
-	var dsn string = fmt.Sprintf("%s:%s@tcp(db)/%s?charset=utf8&parseTime=true",user, pass, database)
+	var dsn string = "test:test@tcp(db)/test?charset=utf8&parseTime=true&loc=Asia%2FTokyo"
 
 	fmt.Println(dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})

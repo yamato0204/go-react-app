@@ -18,7 +18,11 @@ type Controller interface {
 	GetCookie(c echo.Context) error
 	GetRecordMemo(c echo.Context) error
 	CreateRecord(c echo.Context) error
-
+	GetChartData(c echo.Context) error
+	GetTodayDuration(c echo.Context) error
+	GetUsers(c echo.Context)error
+	GetUser(c echo.Context) error
+	GetWeekDuration(c echo.Context) error
 }
 
 type controller struct {
@@ -65,7 +69,7 @@ func (cc *controller) Login(c echo.Context) error {
 	//cookie.Secure = true
 	cookie.HttpOnly = true
 	cookie.Path = "/"
-	cookie.Domain = "localhost:3000"
+	cookie.Domain = "localhost"
 	//cookie.SameSite = http.SameSiteNoneMode
      c.SetCookie(cookie)
 
@@ -119,16 +123,97 @@ func (cc *controller)GetRecordMemo(c echo.Context) error {
 
 	cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
+  fmt.Println(userId)
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
-
-
   resRecord, err := cc.u.GetRecordMemo(userId)
 
+  fmt.Println(err)
   if err != nil {
 	return c.JSON(http.StatusInternalServerError, err.Error())
   }
 
   return c.JSON(http.StatusOK, resRecord)
 }
+
+func (cc *controller)GetChartData(c echo.Context) error {
+  cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  fmt.Println(userId)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+  resChartData, err := cc.u.GetChartData(userId)
+  return c.JSON(http.StatusOK, resChartData)
+}
+
+func (cc *controller)GetTodayDuration(c echo.Context) error {
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  fmt.Println(userId)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+  resdata , err :=  cc.u.GetTodayDuration(userId)
+
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+	
+  }
+
+  return c.JSON(http.StatusOK, resdata)
+
+}
+
+func (cc *controller) GetWeekDuration(c echo.Context) error {
+
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+
+  resdata , err :=  cc.u.GetWeekDuration(userId)
+
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+	
+  }
+
+  return c.JSON(http.StatusOK, resdata)
+
+}
+func (cc *controller)GetUsers(c echo.Context)error {
+
+
+// 		cookieKey := "loginUserIdKey"
+//   userId, err := cc.u.GetSession(c,cookieKey)
+//   fmt.Println(userId)
+//   if err != nil {
+// 	return c.JSON(http.StatusBadRequest, err.Error())
+//   }
+  resUsers, err := cc.u.GetUsers()
+
+  fmt.Println(err)
+  if err != nil {
+	return c.JSON(http.StatusInternalServerError, err.Error())
+  }
+
+  return c.JSON(http.StatusOK, resUsers)
+}
+
+func (cc *controller)GetUser(c echo.Context) error {
+	userId := c.QueryParam("ID")
+
+	resChartData, err := cc.u.GetChartData(userId) 
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+	return c.JSON(http.StatusOK, resChartData)
+
+
+}
+
+

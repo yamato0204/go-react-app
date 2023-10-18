@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	
+	"fmt"
+	"time"
 
-	
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
@@ -21,6 +21,10 @@ type Usecase interface {
 	CreateRecord(article entity.Records) (entity.RecordsResponse, error)
 	GetSession(c echo.Context, CookieKey string)(string, error)
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
+	GetChartData(userId string) ([]entity.ChartDataResponse, error)
+	GetTodayDuration(userId string) (int, error)
+	GetUsers() ([]entity.UserPageResponse, error)
+    GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 }
 
 type usecase struct {
@@ -38,11 +42,11 @@ func NewUsecase(sh infra.SqlHandler, rh infra.RedisHandler) Usecase {
 
 
 func (u *usecase)Signup(user entity.User) (entity.UserResponse, error) {	
-	err := u.sh.GetUserByEmail(&user, user.Email)
-	if err == nil {
-		return entity.UserResponse{}, err
-	}
-
+	
+	// err := u.sh.GetUserByEmail(&user, user.Email);
+	// if err == nil {
+	// 	return entity.UserResponse{}, err
+	// }
 	hash, err := bcrypt.GenerateFromPassword([]byte(user.Password), 10)
 	if err != nil {
 		return entity.UserResponse{}, err
@@ -51,7 +55,9 @@ func (u *usecase)Signup(user entity.User) (entity.UserResponse, error) {
 	newUser := entity.User{
 		ID: uuid.New().String(),
 		Email: user.Email,
-		Password: string(hash)}
+		Password: string(hash),
+		Name: user.Name,
+	}
 		
 	err = u.sh.CreateUser(&newUser)
 	if err != nil {
@@ -111,24 +117,17 @@ func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
 	if err != nil {
 		return "", err
 	}
-
 	return redisValue, nil
-
-
 	//  cookie, err := c.Cookie(CookieKey); 
 	//  if err != nil {
 	// 	return "", err
 	//  }
 	//redisKey := cookie.Value
-	
 
 	//全レコード取得
 	//レコード登録
 	//レコード削除
 	//
-
-
-
 }
 
 func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error) {
@@ -156,8 +155,116 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 
 
 
+func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error){
+
+	 ResDatas := []entity.ChartDataResponse{}
+	//今日取得 => where = 今日の分データ取得
+
+	loc, err := time.LoadLocation("Asia/Tokyo")
+    if err != nil {
+        return []entity.ChartDataResponse{}, err
+    }
 
 
+	today := time.Now().In(loc)
+	fmt.Println(userId)
+	fmt.Println(today)
+
+	for i := 0; i < 7; i++ {
+		date := today.AddDate(0, 0, -i)
+		day := date.Format("2006-01-02")//2020-10-04
+		
+		allDuration, err := u.sh.GetChartData(day, userId)
+		if err != nil {
+			return []entity.ChartDataResponse{}, err
+		}
+		durationInHours := float64(allDuration) / 60.0
+		ResDatas = append(ResDatas, entity.ChartDataResponse{
+			Day: day,
+			Duration: durationInHours } )
+		
+	}
+
+	return ResDatas, nil
+}
+
+func (u *usecase) GetTodayDuration(userId string) (int, error) {
+
+	loc, err := time.LoadLocation("Asia/Tokyo")
+    if err != nil {
+        return 0, err
+    }
+    // 現在の日本時間を取得
+    today := time.Now().In(loc)
+
+	day := today.Format("2006-01-02")
+	
+	allDuration, err := u.sh.GetTodayDuration(day, userId)
+	if err != nil {
+		return 0, err
+	}
+	return allDuration ,nil
+
+}
+
+func (u *usecase) GetWeekDuration(userId string) (entity.WeekDurationResponse, error) {
+
+	ResData := entity.WeekDurationResponse{}
+	loc, err := time.LoadLocation("Asia/Tokyo")
+
+    if err != nil {
+        return entity.WeekDurationResponse{}, err
+    }
+    // 現在の日本時間を取得
+    today := time.Now().In(loc)
+	weekAgo := today.AddDate(0, 0, -6)
+	weekAgo = time.Date(weekAgo.Year(), weekAgo.Month(), weekAgo.Day(), 0, 0, 0, 0, loc)
+	totalDulation, err := u.sh.GetWeekDuration(weekAgo, today, userId)
+
+	 if err != nil {
+		return entity.WeekDurationResponse{}, err
+	 }
+	 hours, minutes := convertMinutesToHoursAndMinutes(totalDulation)
+
+	 ResData.Hour = hours
+	 ResData.Minute = minutes
+	 return ResData, nil
+}
+
+func convertMinutesToHoursAndMinutes(minutes int) (int, int) {
+    hours := minutes / 60
+    remainingMinutes := minutes % 60
+    return hours, remainingMinutes
+}
+
+func (u *usecase) GetUsers() ([]entity.UserPageResponse, error) {
+
+	users := []entity.User{}
+
+	if err := u.sh.GetUser(&users);  err != nil {
+		return nil, err
+	}
+
+	resUsers := []entity.UserPageResponse{}
+	for _, v := range users {
+		t := entity.UserPageResponse{
+			ID: v.ID,
+			Name: v.Name,
+
+		}
+
+		resUsers = append(resUsers, t)
+	}
+	return resUsers, nil
+}
+
+
+	
+
+	
+
+
+	
 	
 
 

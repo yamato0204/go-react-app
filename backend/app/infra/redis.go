@@ -11,7 +11,7 @@ import (
 )
 
 
-
+// docker-compose downすると、redisのsessionなくなるのに、cookieは存在することになる。
 
 type redisHandler struct {
 	client *redis.Client

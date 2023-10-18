@@ -3,8 +3,40 @@ export type Credential = {
   password: string
 }
 
+export type Register = {
+  email: string
+  password: string
+  name: string
+}
+
 
 export type Record = {
+    id: string
     memo: string
     duration: number
 }
+
+export type ChartData = {
+  id: string
+  duration: number
+  day: string
+}
+
+export type TodayDuration = {
+  duration: number
+}
+
+export type WeekDuration = {
+  hour: number;
+  minutes: number;
+}
+
+export type UserData = {
+  id: number
+  name: string
+}
+
+export type UserID = {
+  id: number
+}
+

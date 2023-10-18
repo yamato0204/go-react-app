@@ -112,8 +112,15 @@ type Categories struct {
 	UserId   string    `json:"user_id" gorm:"not null"`
 }
 
- type CategoriesResponse struct {
+ type CategoriesCreateResponse struct {
 	Name string  `json:"name"`
 	
  }
- //カテゴリ　
+ 
+ type CategoriesResponse struct {
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
+ }

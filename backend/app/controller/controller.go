@@ -16,16 +16,21 @@ type Controller interface {
 	Signup(c echo.Context) error
 	Login(c echo.Context) error
 	GetCookie(c echo.Context) error
+
 	GetRecordMemo(c echo.Context) error
 	CreateRecord(c echo.Context) error
+
 	GetChartData(c echo.Context) error
 	GetTodayDuration(c echo.Context) error
+
 	GetUsers(c echo.Context)error
 	GetUser(c echo.Context) error
+
 	GetWeekDuration(c echo.Context) error
 	GetRankingData(c echo.Context) error
 
 	CreateCategory(c echo.Context) error
+	GetCategory(c echo.Context) error
 }
 
 type controller struct {
@@ -257,5 +262,23 @@ func (cc *controller) CreateCategory(c echo.Context) error {
   return c.JSON(http.StatusCreated, CategoryRes)
 
 }
+
+func (cc *controller) GetCategory(c echo.Context) error{
+  cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+  resRecord, err := cc.u.GetCategories(userId)
+
+  if err != nil {
+	return c.JSON(http.StatusInternalServerError, err.Error())
+  }
+
+  return c.JSON(http.StatusOK, resRecord)
+
+}
+
 
 

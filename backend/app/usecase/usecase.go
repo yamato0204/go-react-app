@@ -27,8 +27,9 @@ type Usecase interface {
 	GetUsers() ([]entity.UserPageResponse, error)
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 	GetRankingData() ([]entity.RankingDataResponse, error) 
-	CreateCategory(category entity.Categories) (entity.CategoriesResponse, error)
-}
+	CreateCategory(category entity.Categories) (entity.CategoriesCreateResponse, error)
+	GetCategories(userId string) ([]entity.CategoriesResponse, error)
+} 
 
 type usecase struct {
 	sh  infra.SqlHandler
@@ -315,7 +316,7 @@ return res , nil
 
 
 
-func (u *usecase) CreateCategory(category entity.Categories) (entity.CategoriesResponse, error) {
+func (u *usecase) CreateCategory(category entity.Categories) (entity.CategoriesCreateResponse, error) {
 
 	category.ID = uuid.New().String()
 	r, g, b, a := generateRandomRGBA()
@@ -327,9 +328,9 @@ func (u *usecase) CreateCategory(category entity.Categories) (entity.CategoriesR
 
 	err := u.sh.CreateCategory(&category);  
 	if err != nil {
-		return entity.CategoriesResponse{}, err
+		return entity.CategoriesCreateResponse{}, err
 	}
-	resRecord := entity.CategoriesResponse{
+	resRecord := entity.CategoriesCreateResponse{
 		Name: category.Name,
 	}
 	return resRecord, err
@@ -349,3 +350,26 @@ func generateRandomRGBA() (r, g, b, a int) {
 	return r, g, b, a
 }
 	
+func (u *usecase) GetCategories(userId string) ([]entity.CategoriesResponse, error) {
+	category := []entity.Categories{}
+
+	if err := u.sh.GetCategories(&category, userId);  err != nil {
+		return nil, err
+	}
+
+	resCategory := []entity.CategoriesResponse{}
+	for _, v := range category {
+		t := entity.CategoriesResponse{
+			Name: v.Name,
+			Color_r: v.Color_r,
+			Color_g: v.Color_g,
+			Color_b: v.Color_b,
+			Color_a: v.Color_a,
+		}
+
+		resCategory = append(resCategory, t)
+	}
+	
+	
+	return resCategory, nil
+}

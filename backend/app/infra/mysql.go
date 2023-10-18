@@ -21,6 +21,7 @@ type SqlHandler interface {
 	GetUser(user *[]entity.User)  error
 	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
 	CreateCategory(category *entity.Categories) error
+	GetCategories(categories *[]entity.Categories, userId string) error
 
 }
 
@@ -175,4 +176,11 @@ func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
 	}
 	return nil
  }
+
  
+ func (s *sqlHandler)GetCategories(categories *[]entity.Categories, userId string) error {
+	if err := s.db.Where("user_id=?", userId).Find(categories).Error; err != nil {
+		return err
+	}
+	return nil
+ }

@@ -4,6 +4,7 @@ import { Box, Flex, Spacer, WrapItem } from '@chakra-ui/react';
 import RecordButton from '../elements/RecordButton';
 import TodayDuration from '../elements/TodayDuration';
 import WeekDuration from '../elements/WeekDuration';
+import CategoryRecordButton from '../elements/CategoryRecordButton';
 
 
 
@@ -15,8 +16,11 @@ const ContentsPage = () => {
 
         <>
     <Box>
-  <Flex mt={10} justifyContent='center' flexWrap='wrap'>
-    <RecordButton />
+                <Flex mt={10} justifyContent='center' flexWrap='wrap'>
+                    <Box  mr={4}>
+                        <RecordButton  />
+                        </Box>
+                    <CategoryRecordButton />
   </Flex>
   <Flex mt={20} justifyContent='center' flexWrap='wrap'>
     <Box pr={[0, 10]} mb={[10, 0]}>

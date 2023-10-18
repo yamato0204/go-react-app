@@ -77,8 +77,8 @@ const HomeChart = () => {
       {
         label: "時間",
         data: durations, // 合計時間の配列
-        backgroundColor: 'rgba(75, 192, 192, 0.2)', // グラフの色
-        borderColor: 'rgba(75, 192, 192, 1)', // 枠線の色
+        backgroundColor: 'rgba(246, 223, 220, 150)', // グラフの色
+        borderColor: 'rgba(6246, 223, 220, 150)', // 枠線の色
         borderWidth: 1, // 枠線の太さ
       }
     ]

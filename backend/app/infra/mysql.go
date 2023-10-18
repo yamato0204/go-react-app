@@ -20,6 +20,7 @@ type SqlHandler interface {
 	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
 	GetUser(user *[]entity.User)  error
 	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
+	CreateCategory(category *entity.Categories) error
 
 }
 
@@ -165,4 +166,13 @@ return nil
 	return nil
  }
 
+
+
+func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
+	
+	if err := s.db.Create(category).Error; err != nil {
+		return err
+	}
+	return nil
+ }
  

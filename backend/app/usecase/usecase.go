@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"math/rand"
 	"fmt"
 	"time"
 
@@ -26,6 +27,7 @@ type Usecase interface {
 	GetUsers() ([]entity.UserPageResponse, error)
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 	GetRankingData() ([]entity.RankingDataResponse, error) 
+	CreateCategory(category entity.Categories) (entity.CategoriesResponse, error)
 }
 
 type usecase struct {
@@ -305,22 +307,45 @@ func (u *usecase) GetRankingData() ([]entity.RankingDataResponse, error) {
 	
 return res , nil
 
-
-
 	//三人分　Getdurationweek
-
 
 }
 
 
+
+
+
+func (u *usecase) CreateCategory(category entity.Categories) (entity.CategoriesResponse, error) {
+
+	category.ID = uuid.New().String()
+	r, g, b, a := generateRandomRGBA()
+
+	category.Color_r = r
+	category.Color_g = g
+	category.Color_b = b
+	category.Color_a = a
+
+	err := u.sh.CreateCategory(&category);  
+	if err != nil {
+		return entity.CategoriesResponse{}, err
+	}
+	resRecord := entity.CategoriesResponse{
+		Name: category.Name,
+	}
+	return resRecord, err
+}
+
+
+func generateRandomRGBA() (r, g, b, a int) {
+	// シード値を現在のUnix時間で初期化
+	seed := time.Now().UnixNano()
+	random := rand.New(rand.NewSource(seed))
+
+	r = random.Intn(256) // 0から255のランダムな整数を生成
+	g = random.Intn(256)
+	b = random.Intn(256)
+	a = random.Intn(256)
+
+	return r, g, b, a
+}
 	
-
-	
-
-
-	
-	
-
-
-
-

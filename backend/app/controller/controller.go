@@ -24,6 +24,8 @@ type Controller interface {
 	GetUser(c echo.Context) error
 	GetWeekDuration(c echo.Context) error
 	GetRankingData(c echo.Context) error
+
+	CreateCategory(c echo.Context) error
 }
 
 type controller struct {
@@ -225,7 +227,35 @@ func (cc *controller ) GetRankingData(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusOK, resRankingData)
+	
+	} 
 
 
-} 
+func (cc *controller) CreateCategory(c echo.Context) error {
+
+
+	category := entity.Categories{}
+  if err :=  c.Bind(&category); err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+
+  cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+
+//cookieからsessionIDを取り出し、userIDを取得
+ 
+ category.UserId = userId
+ CategoryRes, err := cc.u.CreateCategory(category)
+
+  if err != nil {
+	return c.JSON(http.StatusInternalServerError, err.Error())
+  }
+
+  return c.JSON(http.StatusCreated, CategoryRes)
+
+}
+
 

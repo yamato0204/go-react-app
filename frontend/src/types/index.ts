@@ -48,3 +48,7 @@ export type RankingData = {
   
 
 }
+
+export type PostCategory = {
+  name : string
+}

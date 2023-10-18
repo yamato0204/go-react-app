@@ -37,6 +37,9 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	u.GET("/get", c.GetUsers)
 	u.GET("/show", c.GetUser)
 
+	ca := e.Group("/category")
+	ca.POST("/create", c.CreateCategory)
+
 
 //レコード関連
 

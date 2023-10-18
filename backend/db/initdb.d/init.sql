@@ -21,3 +21,22 @@ CREATE TABLE `records` (
     PRIMARY KEY (`id`)
 );
 
+CREATE TABLE `categories` (
+    `id` VARCHAR(255) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `color_r` int(60) NOT NULL,
+    `color_g` int(60) NOT NULL,
+    `color_b` int(60) NOT NULL,
+    `color_a` int(60) NOT NULL,
+    `user_id` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`)
+);
+
+
+-- type Categories struct {
+-- 	ID  string  `json:"id"`
+-- 	Name string  `json:"name"`
+-- 	Color_code string  `json:"color"`
+-- 	UserId    string    `json:"user_id" gorm:"not null"`
+
+--  }

@@ -71,15 +71,6 @@ type WeekDurationResponse struct {
 	Minute int `json:"minutes,string"`
 }
 
-//  type RankingDataResponse struct {
-// 	Ranking int `json:"ranking,string"`
-// 	ID    string   `json:"id"`
-// 	Name string `json:"name"`
-// 	Hour int `json:"hour,string"`
-// 	Minute int `json:"minutes,string"`
-
-//  }
-
  type RankingDataResponse struct {
 	UserID string  `json:"user_id" gorm:"not null"`
 	Name string  `json:"name"`
@@ -93,3 +84,36 @@ type WeekDurationResponse struct {
 	Duration int
 	Name string
  }
+
+//  type Categories struct {
+// 	ID  string  `json:"id"`
+// 	Name string  `json:"name"`
+// 	ColorCode ColorCode `json:"color_code"`
+// 	UserId    string    `json:"user_id" gorm:"not null"`
+//  }
+
+
+//  type ColorCode struct {
+// 	R int `json:"r"`
+// 	G int `json:"g"`
+// 	B int `json:"b"`
+// 	A int `json:"a"`
+// }
+
+
+
+type Categories struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`    
+	UserId   string    `json:"user_id" gorm:"not null"`
+}
+
+ type CategoriesResponse struct {
+	Name string  `json:"name"`
+	
+ }
+ //カテゴリ　

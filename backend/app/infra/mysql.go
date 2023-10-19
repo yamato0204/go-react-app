@@ -24,6 +24,7 @@ type SqlHandler interface {
 	GetCategories(categories *[]entity.Categories, userId string) error
 	GetDataByCategoryId(category *entity.Categories,  Id string) error
 
+	GetCategoryNameById(categoryId string) (string, error)
 }
 
 type sqlHandler struct {
@@ -186,4 +187,18 @@ func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
 	}
 
 	return nil
+ }
+
+ func (s * sqlHandler)GetCategoryNameById(categoryId string) (string, error) {
+
+	var name string
+	if err := s.db.
+	Model(&entity.Categories{}).
+	Where("id=?", categoryId).
+	Select("name").
+	Scan(&name).Error; err != nil {
+		return "", err
+	}
+
+	return name, nil
  }

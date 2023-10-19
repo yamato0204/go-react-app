@@ -56,9 +56,9 @@ type RecordsMemoResponse struct {
 	ID  string   `json:"id"`
 	Memo string  `json:"memo"`
 	Duration int  `json:"duration,string"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt string `json:"created_at"`
 	UserId    string    `json:"user_id" gorm:"not null"`
-
+	Name string   `json:"name" gorm:"not null"`
 }
 
 type ChartGetData struct {

@@ -143,12 +143,23 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 
 	resRecord := []entity.RecordsMemoResponse{}
 	for _, v := range record {
+
+		name, err :=  u.sh.GetCategoryNameById(v.CategoryId)
+
+		if  err != nil {
+			return []entity.RecordsMemoResponse{}, err
+		}
+
+		day := v.CreatedAt.Format("2006-01-02")
+
 		t := entity.RecordsMemoResponse{
 			ID: v.ID,
 			Memo: v.Memo,
 			Duration: v.Duration,
 			UserId: v.UserId,
-			CreatedAt: v.CreatedAt,
+			CreatedAt: day,
+			Name: name,
+			
 
 		}
 

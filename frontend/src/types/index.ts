@@ -50,5 +50,6 @@ export type RankingData = {
 }
 
 export type PostCategory = {
+  id : number
   name : string
 }

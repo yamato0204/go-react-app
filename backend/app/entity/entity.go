@@ -48,6 +48,7 @@ type Records struct {
 	Duration int  `json:"duration,string"`
 	CreatedAt time.Time `json:"created_at"`
 	UserId    string    `json:"user_id" gorm:"not null"`
+	CategoryId string   `json:"category_id" gorm:"not null"`
 
 }
 
@@ -60,10 +61,20 @@ type RecordsMemoResponse struct {
 
 }
 
+type ChartGetData struct {
+	Duration float64 
+	CategoryId string 
+}
+
 type ChartDataResponse struct {
 	ID string `json:"id"`
 	Duration float64  `json:"duration,string"`
 	Day string  `json:"day"`
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
 }
 
 type WeekDurationResponse struct {
@@ -118,9 +129,24 @@ type Categories struct {
  }
  
  type CategoriesResponse struct {
+	ID  string  `json:"id"` 
 	Name     string    `json:"name"`
 	Color_r  int  `json:"color_r"` 
     Color_g  int  `json:"color_g"`
     Color_b  int  `json:"color_b"` 
     Color_a  int  `json:"color_a"`  
  }
+
+ type CategoryResById struct {
+
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
+ }
+
+ type ResRecords struct {
+	Total_duration int 
+	CategoryId string
+ }  

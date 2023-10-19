@@ -15,13 +15,14 @@ type SqlHandler interface {
 	GetUserByEmail(user *entity.User, email string) error
 	CreateRecord(record *entity.Records) error
 	GetRecordMemo(record *[]entity.Records, userId string) error 
-	GetChartData( day string, userId string) (int ,error)
+	GetChartData(Data *[]entity.ResRecords, day string, userId string) error 
 	GetTodayDuration(day string,userId string ) (int , error)
 	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
 	GetUser(user *[]entity.User)  error
 	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
 	CreateCategory(category *entity.Categories) error
 	GetCategories(categories *[]entity.Categories, userId string) error
+	GetDataByCategoryId(category *entity.Categories,  Id string) error
 
 }
 
@@ -81,23 +82,16 @@ loc, err := time.LoadLocation("Asia/Tokyo")
 	return nil
  }
 
- func (s *sqlHandler)GetChartData(day string, userId string) (int, error) {
-	// var totalDuration int
-	// if err := s.db.Model(&entity.Records{}).Where("DATE(created_at) = ?","2023-10-24").Select("SUM(duration) as total_duration").Scan(&totalDuration).Error; err != nil {
-	// 	return 0 ,err
-	// }
-	// return totalDuration , nil
-	var totalDuration sql.NullInt64
-
-	if err := s.db.Model(&entity.Records{}).Where("DATE(created_at) = ? AND user_id = ?", day, userId).Select("SUM(duration) as total_duration").Scan(&totalDuration).Error; err != nil {
-		return 0, err
+ func (s *sqlHandler)GetChartData(Data *[]entity.ResRecords, day string, userId string) error {
+	if err := s.db.Table("records").
+		Select("category_id, SUM(duration) as total_duration").
+		Where("DATE(created_at) = ? AND user_id = ?", day, userId).
+		Group("category_id").
+		Scan(&Data).Error; err != nil {
+		return  err
 	}
 
-	if totalDuration.Valid {
-		return int(totalDuration.Int64), nil
-	}
-
-	return 0, nil
+	return  nil
  }
 
 
@@ -182,5 +176,14 @@ func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
 	if err := s.db.Where("user_id=?", userId).Find(categories).Error; err != nil {
 		return err
 	}
+	return nil
+ }
+
+ func (s *sqlHandler)GetDataByCategoryId(category *entity.Categories,  Id string) error {
+
+	if err := s.db.Where("id=?",Id ).First(&category).Error; err != nil {
+		return err
+	}
+
 	return nil
  }

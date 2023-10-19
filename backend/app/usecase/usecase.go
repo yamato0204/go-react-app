@@ -168,27 +168,48 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
     if err != nil {
         return []entity.ChartDataResponse{}, err
     }
-
-
 	today := time.Now().In(loc)
-	fmt.Println(userId)
-	fmt.Println(today)
+	
 
 	for i := 0; i < 7; i++ {
 		date := today.AddDate(0, 0, -i)
 		day := date.Format("2006-01-02")//2020-10-04
 		
-		allDuration, err := u.sh.GetChartData(day, userId)
+		data := []entity.ResRecords{}
+	    err = u.sh.GetChartData(&data, day, userId)
+		
+
+		// [{duration : 20, categoryId : 323232 },{},{} ]
+		for _, ChartData := range data {
+			fmt.Println(ChartData.Total_duration)
+		
+			durationInHours := float64(ChartData.Total_duration) / 60.0
+			Res := entity.Categories{}
+			u.sh.GetDataByCategoryId(&Res, ChartData.CategoryId)
+
+			ResDatas = append(ResDatas, entity.ChartDataResponse{
+			Day: day,
+			Duration: durationInHours,
+			Name: Res.Name,
+			Color_r: Res.Color_r,
+			Color_g: Res.Color_g,
+			Color_b: Res.Color_b,
+			Color_a: Res.Color_a,
+			 } )
+
+		}
+		
 		if err != nil {
 			return []entity.ChartDataResponse{}, err
 		}
-		durationInHours := float64(allDuration) / 60.0
-		ResDatas = append(ResDatas, entity.ChartDataResponse{
-			Day: day,
-			Duration: durationInHours } )
+
+
+		 //durationInHours := float64() / 60.0
+		 ResDatas = append(ResDatas, entity.ChartDataResponse{
+		 	Day: day,
+		 	} )
 		
 	}
-
 	return ResDatas, nil
 }
 
@@ -360,6 +381,7 @@ func (u *usecase) GetCategories(userId string) ([]entity.CategoriesResponse, err
 	resCategory := []entity.CategoriesResponse{}
 	for _, v := range category {
 		t := entity.CategoriesResponse{
+			ID: v.ID,
 			Name: v.Name,
 			Color_r: v.Color_r,
 			Color_g: v.Color_g,

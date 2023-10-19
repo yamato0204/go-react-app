@@ -31,6 +31,7 @@ type Controller interface {
 
 	CreateCategory(c echo.Context) error
 	GetCategory(c echo.Context) error
+	
 }
 
 type controller struct {
@@ -97,10 +98,6 @@ record := entity.Records{}
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
-
-  fmt.Println(userId)
-
-   fmt.Println(err)
 //cookieからsessionIDを取り出し、userIDを取得
  
  record.UserId = userId
@@ -148,7 +145,7 @@ func (cc *controller)GetRecordMemo(c echo.Context) error {
 func (cc *controller)GetChartData(c echo.Context) error {
   cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
-  fmt.Println(userId)
+ // fmt.Println(userId)
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }

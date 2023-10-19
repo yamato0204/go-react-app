@@ -82,6 +82,11 @@ type WeekDurationResponse struct {
 	Minute int `json:"minutes,string"`
 }
 
+type TodayDurationResponse struct {
+	Hour int `json:"hour,string"`
+	Minute int `json:"minutes,string"`
+}
+
  type RankingDataResponse struct {
 	UserID string  `json:"user_id" gorm:"not null"`
 	Name string  `json:"name"`

@@ -22,7 +22,7 @@ const ContentsPage = () => {
                         </Box>
                     <CategoryRecordButton />
   </Flex>
-  <Flex mt={20} justifyContent='center' flexWrap='wrap'>
+  <Flex mt={10} justifyContent='center' flexWrap='wrap'>
     <Box pr={[0, 10]} mb={[10, 0]}>
       <TodayDuration />
     </Box>

@@ -23,7 +23,7 @@ type Usecase interface {
 	GetSession(c echo.Context, CookieKey string)(string, error)
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
-	GetTodayDuration(userId string) (int, error)
+	 GetTodayDuration(userId string) (entity.TodayDurationResponse, error)
 	GetUsers() ([]entity.UserPageResponse, error)
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 	GetRankingData() ([]entity.RankingDataResponse, error) 
@@ -213,22 +213,31 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 	return ResDatas, nil
 }
 
-func (u *usecase) GetTodayDuration(userId string) (int, error) {
+func (u *usecase) GetTodayDuration(userId string) (entity.TodayDurationResponse, error) {
 
+	ResData := entity.TodayDurationResponse{}
 	loc, err := time.LoadLocation("Asia/Tokyo")
     if err != nil {
-        return 0, err
+        return entity.TodayDurationResponse{}, err
     }
     // 現在の日本時間を取得
     today := time.Now().In(loc)
 
 	day := today.Format("2006-01-02")
 	
-	allDuration, err := u.sh.GetTodayDuration(day, userId)
+	totalDulation, err := u.sh.GetTodayDuration(day, userId)
 	if err != nil {
-		return 0, err
+		return entity.TodayDurationResponse{}, err
 	}
-	return allDuration ,nil
+
+
+	 hours, minutes := convertMinutesToHoursAndMinutes(totalDulation)
+
+	 ResData.Hour = hours
+	 ResData.Minute = minutes
+
+	 return ResData, nil
+	
 
 }
 

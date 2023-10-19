@@ -23,7 +23,8 @@ export type ChartData = {
 }
 
 export type TodayDuration = {
-  duration: number
+ hour: number;
+  minutes: number;
 }
 
 export type WeekDuration = {

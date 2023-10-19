@@ -1,7 +1,7 @@
 import React from "react";
 import { client } from "@/libs/axios";
 import { TodayDuration } from "@/types";
-import { Box, Text } from "@chakra-ui/react";
+import { Box, Flex, Text } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 const TodayDuration: React.FC = () => {
@@ -19,7 +19,26 @@ const TodayDuration: React.FC = () => {
   }
 
   // duration が存在することが保証されたので、安全に表示できます
-  return <Text fontSize='4xl' as='b'>今日の積み上げ{duration}分</Text>;
+   const formattedDuration = `${duration.hour} 時間 ${duration.minutes} 分`;
+
+
+  // duration が存在することが保証されたので、安全に表示できます
+    return (
+
+        <>
+         
+   
+     
+    
+ 
+        <Text fontSize='4xl' as='b'>今日の積み上げ
+                </Text>
+                <Box>
+                    <Text fontSize='4xl' as='b' ml={8}>{formattedDuration}</Text>
+                    </Box>
+                
+    </>
+    )
 }
 
 export default TodayDuration;

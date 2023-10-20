@@ -25,6 +25,9 @@ type Usecase interface {
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
 	 GetTodayDuration(userId string) (entity.TodayDurationResponse, error)
 	GetUsers() ([]entity.UserPageResponse, error)
+
+	 GetUserName(userId string )(string, error)
+	 
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 	GetRankingData() ([]entity.RankingDataResponse, error) 
 	CreateCategory(category entity.Categories) (entity.CategoriesCreateResponse, error)
@@ -168,7 +171,18 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 	return resRecord, nil
 } 
 
+func (u *usecase) GetUserName(userId string )(string, error) {
 
+	user := entity.User{}
+
+	if err := u.sh.GetUserName(&user, userId); err != nil {
+		return "", nil
+	}
+
+	return  user.Name, nil
+
+
+}
 
 func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error){
 

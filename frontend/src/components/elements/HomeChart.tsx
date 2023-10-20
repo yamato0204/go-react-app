@@ -1,3 +1,4 @@
+
 import { client } from "@/libs/axios";
 import { ChartData } from "@/types";
 import { useQuery } from "@tanstack/react-query";
@@ -7,69 +8,152 @@ import { Bar } from "react-chartjs-2";
 Chart.register(...registerables)
 
 
-
-
-
-
-
 const HomeChart = () => {
-  const { data: records, status } = useQuery(['records'], async () => {
-    const { data } = await client.get<ChartDataResponse[]>('chartData', {
-      withCredentials: true,
+    let { data: records, status } = useQuery(['records'], async () => {
+        const { data } = await client.get<ChartData[]>('chartData', { withCredentials: true });
+        return data;
     });
-    return data;
-  });
 
-  if (status === 'loading') {
-    return <div>Loading...</div>;
-  }
+    // records データが undefined の場合はデフォルトで空配列を使う
+    records = records || [];
 
-  if (status === 'error') {
-    return <div>Error loading data</div>;
-  }
+    const convertData = (records) => {
+        const dates = [...new Set(records.map(record => record.day))]; // ユニークな日付を取得
+        const uniqueNames = [...new Set(records.map(record => record.name))];
 
-  console.log(records)
-  // バックエンドから受け取ったデータを適切な形式に変換
-  const convertedData = records.map((record) => {
-    return {
-      label: record.name,
-      data: [record.duration], // データは分から時間に変換されていると仮定
-      backgroundColor: `rgba(${record.color_r}, ${record.color_g}, ${record.color_b}, ${record.color_a})`,
+        const datasets = uniqueNames.map(name => {
+            const data = dates.map(date => {
+                const record = records.find(r => r.name === name && r.day === date);
+                return record ? record.duration : 0;
+            });
+
+            return {
+                label: name,
+                data: data,
+                backgroundColor: `rgba(${records.find(record => record.name === name).color_r},
+                                       ${records.find(record => record.name === name).color_g},
+                                       ${records.find(record => record.name === name).color_b},
+                                       ${records.find(record => record.name === name).color_a })`
+            };
+        });
+
+        return {
+            labels: dates,
+            datasets: datasets
+        };
     };
-  });
 
-  //const labels = records.map((record) => record.day);
-  const labels = [...new Set(records.map((record) => record.day))];
+    const data = convertData(records);
 
+    const options = {
+        scales: {
+            x: {
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
+        },
+        responsive: false
+    };
 
-  const data = {
-    labels: labels,
-    datasets: convertedData,
-  };
-
-  const options = {
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-        type: 'linear',
-        ticks: {
-          beginAtZero: true, // グラフの最小値を0から始める場合はtrueに設定します。
-          callback: function (value: any) {
-            return value + ' 時間'; // ラベルに単位（' 時間'）を追加します。
-          }
-        }
-      }
-    },
-    responsive: false,
-  };
-
-  return <Bar height={300} width={400} data={data} options={options} />;
+    return (
+        <Bar height={300} width={400} data={data} options={options} />
+    );
 };
 
 export default HomeChart;
+
+
+
+
+
+
+
+
+
+
+
+// import { client } from "@/libs/axios";
+// import { ChartData } from "@/types";
+// import { useQuery } from "@tanstack/react-query";
+// import { Chart, registerables } from "chart.js";
+// import { Bar } from "react-chartjs-2";
+
+// Chart.register(...registerables)
+
+
+// const HomeChart = () => {
+//   const { data: records, status } = useQuery(['records'], async () => {
+//     const { data } = await client.get<ChartDataResponse[]>('chartData', {
+//       withCredentials: true,
+//     });
+//     return data;
+//   });
+
+//   if (status === 'loading') {
+//     return <div>Loading...</div>;
+//   }
+
+//   if (status === 'error') {
+//     return <div>Error loading data</div>;
+//   }
+
+//   console.log(records)
+//   // バックエンドから受け取ったデータを適切な形式に変換
+//   const convertedData = records.map((record) => {
+//     return {
+//       label: record.name,
+//       data: [record.duration], // データは分から時間に変換されていると仮定
+//       backgroundColor: `rgba(${record.color_r}, ${record.color_g}, ${record.color_b}, ${record.color_a})`,
+//     };
+//   });
+
+//   //const labels = records.map((record) => record.day);
+//   const labels = [...new Set(records.map((record) => record.day))];
+
+
+//   const data = {
+//     labels: labels,
+//     datasets: convertedData,
+//   };
+
+//   const options = {
+//     scales: {
+//       x: {
+//         stacked: true,
+//       },
+//       y: {
+//         stacked: true,
+//         type: 'linear',
+//         ticks: {
+//           beginAtZero: true, // グラフの最小値を0から始める場合はtrueに設定します。
+//           callback: function (value: any) {
+//             return value + ' 時間'; // ラベルに単位（' 時間'）を追加します。
+//           }
+//         }
+//       }
+//     },
+//     responsive: false,
+//   };
+
+//   return <Bar height={300} width={400} data={data} options={options} />;
+// };
+
+// export default HomeChart;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

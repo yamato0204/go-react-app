@@ -1,8 +1,7 @@
 
-import HomeChart from '../elements/HomeChart';
+
 import { Box, Flex, Spacer } from '@chakra-ui/react';
-import RecordButton from '../elements/RecordButton';
-import TodayDuration from '../elements/TodayDuration';
+
 import { UserID } from '@/types';
 import UserChart from '../elements/UserChart';
 
@@ -26,10 +25,9 @@ const UserPageLayout: React.FC<UserID> = ({ userId }) => {
                         </Box>
                     </Flex>
 
+                 <Flex mt={30} mb={40} justifyContent='center' flexWrap='wrap'>
                 <UserChart userId={userId}/>
-                <Flex mt={40} justifyContent='center' >
-                   
-                    </ Flex>
+                </Flex>
 
        </Box>
 </>

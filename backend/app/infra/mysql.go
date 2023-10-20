@@ -19,6 +19,7 @@ type SqlHandler interface {
 	GetTodayDuration(day string,userId string ) (int , error)
 	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
 	GetUser(user *[]entity.User)  error
+	GetUserName(user *entity.User, userId string) error
 	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
 	CreateCategory(category *entity.Categories) error
 	GetCategories(categories *[]entity.Categories, userId string) error
@@ -43,6 +44,14 @@ func  (s *sqlHandler)CreateUser(user *entity.User) error {
 	if err := s.db.Create(user).Error; err != nil {
 		return err
 	}
+	return nil
+}
+
+func (s *sqlHandler)GetUserName(user *entity.User, userId string) error {
+	if err := s.db.Model(&user).Where("id=?", userId).Error; err != nil {
+		return err
+	}
+
 	return nil
 }
 

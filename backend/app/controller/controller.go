@@ -211,12 +211,20 @@ func (cc *controller)GetUsers(c echo.Context)error {
 func (cc *controller)GetUser(c echo.Context) error {
 	userId := c.QueryParam("ID")
 
-	resChartData, err := cc.u.GetChartData(userId) 
+	resData, err := cc.u.GetChartData(userId) 
+
+	//resData2,err := cc.u.GetUserName(userId)
+
 	if err != nil {
 		return c.JSON(http.StatusBadRequest, err.Error())
 	}
 
-	return c.JSON(http.StatusOK, resChartData)
+	// response := map[string]interface{}{
+	// 	"chartData": resData,
+	// 	"userData":  resData2,
+	// }
+
+	return c.JSON(http.StatusOK, resData)
 
 
 }

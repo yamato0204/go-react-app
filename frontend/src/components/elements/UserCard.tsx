@@ -25,8 +25,12 @@ const UserCard: React.FC<RecordCardProps> = ({ user }) => {
     <Stack divider={<StackDivider />} spacing='8'>
        
         <Box>
-        <Heading size='md' textTransform='uppercase'>
-         <Link href={`/user/${user.id}`}>{user.name}</Link>
+                            <Heading size='md' textTransform='uppercase'>
+                                
+                                {/* <Link href={`/user/${user.id}`}>{user.name}</Link> */}
+                                <a href={`/user/${user.id}`}>{user.name} </a>
+                                
+
         </Heading>
        
       

@@ -16,16 +16,19 @@ type SqlHandler interface {
 	CreateRecord(record *entity.Records) error
 	GetRecordMemo(record *[]entity.Records, userId string) error 
 	GetChartData(Data *[]entity.ResRecords, day string, userId string) error 
+	 GetPieData(data *[]entity.PieDataSum  ,userId string) error 
 	GetTodayDuration(day string,userId string ) (int , error)
 	GetWeekDuration(beforeDay time.Time, today time.Time, userId string )(int, error) 
 	GetUser(user *[]entity.User)  error
-	GetUserName(user *entity.User, userId string) error
+	
 	GetRankingData(RankData *[]entity.GetRankingData , beforeDay time.Time, today time.Time) error
 	CreateCategory(category *entity.Categories) error
 	GetCategories(categories *[]entity.Categories, userId string) error
 	GetDataByCategoryId(category *entity.Categories,  Id string) error
+	GetUserName(userId string) (string, error)
 
 	GetCategoryNameById(categoryId string) (string, error)
+	GetCategoryData(categories *entity.Categories, userId string, id string) error
 }
 
 type sqlHandler struct {
@@ -47,13 +50,21 @@ func  (s *sqlHandler)CreateUser(user *entity.User) error {
 	return nil
 }
 
-func (s *sqlHandler)GetUserName(user *entity.User, userId string) error {
-	if err := s.db.Model(&user).Where("id=?", userId).Error; err != nil {
-		return err
+func (s *sqlHandler)GetUserName(userId string) (string, error) {
+	var userName string
+	if err := s.db.
+	Model(&entity.User{}).
+	Where("id=?", userId).
+	Select("name").
+	Scan(&userName).Error; err != nil {
+		return "", err
 	}
 
-	return nil
+	return userName, nil
 }
+
+
+ 
 
 func (s *sqlHandler)GetUserByEmail(user *entity.User, email string) error {
 	if err := s.db.Where("email=?", email).First(user).Error; err != nil {
@@ -189,6 +200,15 @@ func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
 	return nil
  }
 
+ func (s *sqlHandler)GetCategoryData(categories *entity.Categories, userId string, id string) error{
+
+	if err := s.db.Where("id = ? AND user_id = ? ", id, userId).First(categories).Error; err != nil {
+		return err
+	}
+
+	return nil
+ }
+
  func (s *sqlHandler)GetDataByCategoryId(category *entity.Categories,  Id string) error {
 
 	if err := s.db.Where("id=?",Id ).First(&category).Error; err != nil {
@@ -210,4 +230,18 @@ func (s *sqlHandler)CreateCategory(category *entity.Categories) error {
 	}
 
 	return name, nil
+ }
+
+
+ func (s *sqlHandler) GetPieData(data *[]entity.PieDataSum  ,userId string) error  {
+
+	if err := s.db.Table("records").
+		Select("category_id, SUM(duration) as SumDuration").
+		Where("user_id = ?", userId).
+		Group("category_id").
+		Scan(&data).Error; err != nil {
+		return  err
+	}
+	return  nil
+
  }

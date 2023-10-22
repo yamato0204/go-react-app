@@ -25,12 +25,15 @@ type Controller interface {
 
 	GetUsers(c echo.Context)error
 	GetUser(c echo.Context) error
+	GetUserData(c echo.Context) error
 
 	GetWeekDuration(c echo.Context) error
 	GetRankingData(c echo.Context) error
 
 	CreateCategory(c echo.Context) error
 	GetCategory(c echo.Context) error
+
+	GetPieChartData(c echo.Context) error
 	
 }
 
@@ -128,13 +131,13 @@ func (cc *controller)GetRecordMemo(c echo.Context) error {
 
 	cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
-  fmt.Println(userId)
+  
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
   resRecord, err := cc.u.GetRecordMemo(userId)
 
-  fmt.Println(err)
+  
   if err != nil {
 	return c.JSON(http.StatusInternalServerError, err.Error())
   }
@@ -156,7 +159,7 @@ func (cc *controller)GetChartData(c echo.Context) error {
 func (cc *controller)GetTodayDuration(c echo.Context) error {
 	cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
-  fmt.Println(userId)
+  
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
@@ -189,6 +192,39 @@ func (cc *controller) GetWeekDuration(c echo.Context) error {
   return c.JSON(http.StatusOK, resdata)
 
 }
+
+
+
+func (cc *controller) GetUserData(c echo.Context) error {
+
+
+	userId := c.QueryParam("ID")
+
+	resName, resRecord, err := cc.u.GetUserData(userId) 
+
+
+	fmt.Println(resName)
+	
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, err.Error())
+	}
+
+
+	response := struct {
+		Name   string                   `json:"userName"`
+		Record []entity.RecordsMemoResponse `json:"userRecord"`
+	}{
+		Name:   resName,
+		Record: resRecord,
+	}
+
+	return c.JSON(http.StatusOK, response)
+
+
+}
+
+
+
 func (cc *controller)GetUsers(c echo.Context)error {
 
 
@@ -200,7 +236,7 @@ func (cc *controller)GetUsers(c echo.Context)error {
 //   }
   resUsers, err := cc.u.GetUsers()
 
-  fmt.Println(err)
+  
   if err != nil {
 	return c.JSON(http.StatusInternalServerError, err.Error())
   }
@@ -283,6 +319,17 @@ func (cc *controller) GetCategory(c echo.Context) error{
 
   return c.JSON(http.StatusOK, resRecord)
 
+}
+
+func (cc *controller) GetPieChartData(c echo.Context) error {
+	cookieKey := "loginUserIdKey"
+  userId, err := cc.u.GetSession(c,cookieKey)
+ // fmt.Println(userId)
+  if err != nil {
+	return c.JSON(http.StatusBadRequest, err.Error())
+  }
+  resChartData, err := cc.u.GetPieChartData(userId)
+  return c.JSON(http.StatusOK, resChartData)
 }
 
 

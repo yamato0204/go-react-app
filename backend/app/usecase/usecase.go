@@ -1,8 +1,9 @@
 package usecase
 
 import (
-	"math/rand"
 	"fmt"
+	"math/rand"
+
 	"time"
 
 	"github.com/google/uuid"
@@ -23,11 +24,11 @@ type Usecase interface {
 	GetSession(c echo.Context, CookieKey string)(string, error)
 	GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error)
 	GetChartData(userId string) ([]entity.ChartDataResponse, error)
-	 GetTodayDuration(userId string) (entity.TodayDurationResponse, error)
+	GetPieChartData(userId string) ([]entity.ChartPieDataResponse, error)
+	GetTodayDuration(userId string) (entity.TodayDurationResponse, error)
+	GetUserData(userId string)(string, []entity.RecordsMemoResponse, error)
 	GetUsers() ([]entity.UserPageResponse, error)
 
-	 GetUserName(userId string )(string, error)
-	 
     GetWeekDuration(userId string)  (entity.WeekDurationResponse, error)
 	GetRankingData() ([]entity.RankingDataResponse, error) 
 	CreateCategory(category entity.Categories) (entity.CategoriesCreateResponse, error)
@@ -140,9 +141,11 @@ func(u *usecase) GetSession(c echo.Context, CookieKey string)(string, error) {
 func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, error) {
 	record := []entity.Records{}
 
+	
 	if err := u.sh.GetRecordMemo(&record, userId);  err != nil {
 		return nil, err
 	}
+
 
 	resRecord := []entity.RecordsMemoResponse{}
 	for _, v := range record {
@@ -162,8 +165,6 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 			UserId: v.UserId,
 			CreatedAt: day,
 			Name: name,
-			
-
 		}
 
 		resRecord = append(resRecord, t)
@@ -171,31 +172,58 @@ func(u *usecase) GetRecordMemo(userId string) ([]entity.RecordsMemoResponse, err
 	return resRecord, nil
 } 
 
-func (u *usecase) GetUserName(userId string )(string, error) {
+func (u *usecase) GetUserData(userId string )(string, []entity.RecordsMemoResponse, error) {
 
-	user := entity.User{}
+	record := []entity.Records{}
 
-	if err := u.sh.GetUserName(&user, userId); err != nil {
-		return "", nil
+	userName, err := u.sh.GetUserName(userId); 
+	if err != nil {
+		return "", []entity.RecordsMemoResponse{}, err
+	}
+	fmt.Println(userName)
+
+	u.sh.GetRecordMemo(&record, userId)
+
+
+resRecord := []entity.RecordsMemoResponse{}
+	for _, v := range record {
+
+		name, err :=  u.sh.GetCategoryNameById(v.CategoryId)
+
+		if  err != nil {
+			return "", []entity.RecordsMemoResponse{}, err
+		}
+
+		day := v.CreatedAt.Format("2006-01-02")
+
+		t := entity.RecordsMemoResponse{
+			ID: v.ID,
+			Memo: v.Memo,
+			Duration: v.Duration,
+			UserId: v.UserId,
+			CreatedAt: day,
+			Name: name,
+		}
+
+		resRecord = append(resRecord, t)
 	}
 
-	return  user.Name, nil
+
+	return  userName, resRecord,  nil
 
 
 }
 
 func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error){
 
-	 ResDatas := []entity.ChartDataResponse{}
+	ResDatas := []entity.ChartDataResponse{}
 	//今日取得 => where = 今日の分データ取得
-
 	loc, err := time.LoadLocation("Asia/Tokyo")
     if err != nil {
         return []entity.ChartDataResponse{}, err
     }
 	today := time.Now().In(loc)
 	
-
 	for i := 0; i < 7; i++ {
 		date := today.AddDate(0, 0, -i)
 		day := date.Format("2006-01-02")//2020-10-04
@@ -203,10 +231,9 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 		data := []entity.ResRecords{}
 	    err = u.sh.GetChartData(&data, day, userId)
 		
-
 		// [{duration : 20, categoryId : 323232 },{},{} ]
 		for _, ChartData := range data {
-			fmt.Println(ChartData.Total_duration)
+			
 		
 			durationInHours := float64(ChartData.Total_duration) / 60.0
 			Res := entity.Categories{}
@@ -221,13 +248,10 @@ func (u *usecase) GetChartData(userId string) ([]entity.ChartDataResponse, error
 			Color_b: Res.Color_b,
 			Color_a: Res.Color_a,
 			 } )
-
-		}
-		
+		}	
 		if err != nil {
 			return []entity.ChartDataResponse{}, err
 		}
-
 
 		 //durationInHours := float64() / 60.0
 		 ResDatas = append(ResDatas, entity.ChartDataResponse{
@@ -336,8 +360,7 @@ func (u *usecase) GetRankingData() ([]entity.RankingDataResponse, error) {
 	weekAgo := today.AddDate(0, 0, -6)
 	weekAgo = time.Date(weekAgo.Year(), weekAgo.Month(), weekAgo.Day(), 0, 0, 0, 0, loc)
 
-	fmt.Println(weekAgo)
-	fmt.Println(today)
+	
 	if err := u.sh.GetRankingData(&rankData, weekAgo, today); err != nil {
 		return []entity.RankingDataResponse{} ,err
 	}
@@ -428,4 +451,48 @@ func (u *usecase) GetCategories(userId string) ([]entity.CategoriesResponse, err
 	
 	
 	return resCategory, nil
+}
+
+
+func (u *usecase)GetPieChartData(userId string) ([]entity.ChartPieDataResponse, error) {
+
+	ResDatas := []entity.ChartPieDataResponse{}
+	
+	// categoryごとのdurationの合計時間取得
+	// categoryの名前取得
+
+	Data := []entity.PieDataSum{}
+	if err := u.sh.GetPieData(&Data, userId);  err != nil {
+		return []entity.ChartPieDataResponse{}, err
+	}
+
+	// {1, 20} {2, 35} {3, 45}
+	
+	for _, v := range Data {
+
+		category := entity.Categories{}
+		if err := u.sh.GetCategoryData(&category,userId, v.Category_id); err != nil {
+			return []entity.ChartPieDataResponse{}, err
+		}
+	
+		t := entity.ChartPieDataResponse{
+			Name: category.Name,
+			Color_r: category.Color_r,
+			Color_g: category.Color_g,
+			Color_b: category.Color_b,
+			Color_a: category.Color_a,
+			Amount : v.SumDuration,
+		}
+
+		ResDatas = append(ResDatas, t)
+	}
+
+		
+
+		
+		// [{duration : 20, categoryId : 323232 },{},{} ]
+		
+
+	return ResDatas, nil
+
 }

@@ -1,4 +1,4 @@
-import HomeChart from '../elements/HomeChart';
+import HomeChart from '../elements/HomeBarChart';
 import { Box, Center, Container, Grid, useToast } from '@chakra-ui/react';
 import RecordCard from '../elements/RecordCard';
 import { useQuery } from '@tanstack/react-query';

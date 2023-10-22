@@ -14,7 +14,7 @@ const UserChart: React.FC<UserID> = ({ userId }) => {
 
 
    let { data:records, status}  = useQuery(['records'], async () => {
-       const { data } = await client.get<ChartData[]>('user/show', {
+       const { data } = await client.get<ChartData[]>('user/chart', {
            withCredentials: true,
             params: {
     // ここにクエリパラメータを指定する

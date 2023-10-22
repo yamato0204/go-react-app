@@ -12,6 +12,16 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type UserDataResponse struct {
+
+	ID    string   `json:"id"`
+	UserName string `json:"name"`
+	Memo string  `json:"memo"`
+	Duration int  `json:"duration,string"`
+	CreatedAt string `json:"created_at"`
+	CategoryName string   `json:"category" gorm:"not null"`
+
+}
 
 type UserResponse struct {
 	ID    string   `json:"id"`
@@ -77,6 +87,20 @@ type ChartDataResponse struct {
     Color_a  int  `json:"color_a"`  
 }
 
+type ChartPieDataResponse struct {
+	Name     string    `json:"name"`
+	Amount   int       `json:"amount"`
+	Color_r  int       `json:"color_r"` 
+    Color_g  int       `json:"color_g"`
+    Color_b  int       `json:"color_b"` 
+    Color_a  int       `json:"color_a"`  
+}
+
+type PieDataSum struct {
+	Category_id string
+	SumDuration int
+}
+ 
 type WeekDurationResponse struct {
 	Hour int `json:"hour,string"`
 	Minute int `json:"minutes,string"`

@@ -28,6 +28,7 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	e.GET("/todayDuration", c.GetTodayDuration)
 	e.GET("/weekDuration", c.GetWeekDuration)
 	e.GET("/rankingData", c.GetRankingData)
+	e.GET("/PieChartData", c.GetPieChartData)
 
 	t := e.Group("/record")
 	t.GET("/get", c.GetRecordMemo)
@@ -35,7 +36,8 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	
 	u := e.Group("/user")
 	u.GET("/get", c.GetUsers)
-	u.GET("/show", c.GetUser)
+	u.GET("/chart", c.GetUser)
+	u.GET("/show", c.GetUserData)
 
 	ca := e.Group("/category")
 	ca.GET("/get", c.GetCategory)

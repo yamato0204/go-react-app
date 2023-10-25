@@ -30,6 +30,8 @@ func NewRouter(c controller.Controller) *echo.Echo{
 	e.GET("/rankingData", c.GetRankingData)
 	e.GET("/PieChartData", c.GetPieChartData)
 
+	e.POST("edit/post", c.EditPost)
+
 	t := e.Group("/record")
 	t.GET("/get", c.GetRecordMemo)
 	t.POST("/create", c.CreateRecord)

@@ -15,6 +15,7 @@ const HomePieChart = () => {
     return null;
   }
 
+    console.log(pie)
   const labels = pie.map(item => item.name);
   const dataValues = pie.map(item => item.amount);
   const backgroundColors = pie.map(item => `rgba(${item.color_r}, ${item.color_g}, ${item.color_b}, ${item.color_a /50})`);

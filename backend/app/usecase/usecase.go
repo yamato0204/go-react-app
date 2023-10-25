@@ -2,7 +2,12 @@ package usecase
 
 import (
 	"fmt"
+	"io"
 	"math/rand"
+	"net/http"
+	"path/filepath"
+
+	"os"
 
 	"time"
 
@@ -33,6 +38,8 @@ type Usecase interface {
 	GetRankingData() ([]entity.RankingDataResponse, error) 
 	CreateCategory(category entity.Categories) (entity.CategoriesCreateResponse, error)
 	GetCategories(userId string) ([]entity.CategoriesResponse, error)
+
+	ImageFileUp(c echo.Context) error
 } 
 
 type usecase struct {
@@ -471,7 +478,7 @@ func (u *usecase)GetPieChartData(userId string) ([]entity.ChartPieDataResponse, 
 	for _, v := range Data {
 
 		category := entity.Categories{}
-		if err := u.sh.GetCategoryData(&category,userId, v.Category_id); err != nil {
+		if err := u.sh.GetCategoryData(&category, userId, v.Category_id); err != nil {
 			return []entity.ChartPieDataResponse{}, err
 		}
 	
@@ -495,4 +502,56 @@ func (u *usecase)GetPieChartData(userId string) ([]entity.ChartPieDataResponse, 
 
 	return ResDatas, nil
 
+}
+
+func (u *usecase )ImageFileUp(c echo.Context)  error{
+
+	r := c.Request()
+
+	file, fileHeader, err := r.FormFile("file")
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
+	}
+	defer file.Close()
+
+	err = os.MkdirAll("./uploadfiles", os.ModePerm)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	buff := make([]byte, 512)
+	_, err = file.Read(buff)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	filetype := http.DetectContentType(buff)
+	if filetype != "image/jpeg" && filetype != "image/png" {
+		return echo.NewHTTPError(http.StatusBadRequest, "JPEG、または、PNGでアップロードしてください。")
+	}
+
+	_, err = file.Seek(0, io.SeekStart)
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), filepath.Ext(fileHeader.Filename))
+	fmt.Println(filename)
+
+	// Create file using generated filename
+	dst, err := os.Create(fmt.Sprintf("./uploadfiles/%s", filename))
+
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+	defer dst.Close()
+
+	_, err = io.Copy(dst, file)
+	
+	if err != nil {
+		return echo.NewHTTPError(http.StatusInternalServerError, err.Error())
+	}
+
+	return nil
 }

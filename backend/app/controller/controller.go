@@ -34,6 +34,8 @@ type Controller interface {
 	GetCategory(c echo.Context) error
 
 	GetPieChartData(c echo.Context) error
+
+	EditPost(c echo.Context) error
 	
 }
 
@@ -324,12 +326,24 @@ func (cc *controller) GetCategory(c echo.Context) error{
 func (cc *controller) GetPieChartData(c echo.Context) error {
 	cookieKey := "loginUserIdKey"
   userId, err := cc.u.GetSession(c,cookieKey)
- // fmt.Println(userId)
+  fmt.Println(userId)
   if err != nil {
 	return c.JSON(http.StatusBadRequest, err.Error())
   }
   resChartData, err := cc.u.GetPieChartData(userId)
   return c.JSON(http.StatusOK, resChartData)
+}
+
+func (cc *controller) EditPost(c echo.Context) error {
+
+	if err := cc.u.ImageFileUp(c); err != nil {
+		fmt.Println(err)
+		return err
+	}
+
+	
+	return c.String(200, "ok")
+	
 }
 
 

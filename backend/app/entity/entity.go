@@ -12,6 +12,16 @@ type User struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
+type UserDataResponse struct {
+
+	ID    string   `json:"id"`
+	UserName string `json:"name"`
+	Memo string  `json:"memo"`
+	Duration int  `json:"duration,string"`
+	CreatedAt string `json:"created_at"`
+	CategoryName string   `json:"category" gorm:"not null"`
+
+}
 
 type UserResponse struct {
 	ID    string   `json:"id"`
@@ -48,6 +58,7 @@ type Records struct {
 	Duration int  `json:"duration,string"`
 	CreatedAt time.Time `json:"created_at"`
 	UserId    string    `json:"user_id" gorm:"not null"`
+	CategoryId string   `json:"category_id" gorm:"not null"`
 
 }
 
@@ -55,18 +66,116 @@ type RecordsMemoResponse struct {
 	ID  string   `json:"id"`
 	Memo string  `json:"memo"`
 	Duration int  `json:"duration,string"`
-	CreatedAt time.Time `json:"created_at"`
+	CreatedAt string `json:"created_at"`
 	UserId    string    `json:"user_id" gorm:"not null"`
+	Name string   `json:"name" gorm:"not null"`
+}
 
+type ChartGetData struct {
+	Duration float64 
+	CategoryId string 
 }
 
 type ChartDataResponse struct {
 	ID string `json:"id"`
 	Duration float64  `json:"duration,string"`
 	Day string  `json:"day"`
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
 }
 
+type ChartPieDataResponse struct {
+	Name     string    `json:"name"`
+	Amount   int       `json:"amount"`
+	Color_r  int       `json:"color_r"` 
+    Color_g  int       `json:"color_g"`
+    Color_b  int       `json:"color_b"` 
+    Color_a  int       `json:"color_a"`  
+}
+
+type PieDataSum struct {
+	Category_id string
+	SumDuration int
+}
+ 
 type WeekDurationResponse struct {
 	Hour int `json:"hour,string"`
 	Minute int `json:"minutes,string"`
 }
+
+type TodayDurationResponse struct {
+	Hour int `json:"hour,string"`
+	Minute int `json:"minutes,string"`
+}
+
+ type RankingDataResponse struct {
+	UserID string  `json:"user_id" gorm:"not null"`
+	Name string  `json:"name"`
+	Hour int  `json:"hour,string"`
+	Minute int  `json:"minutes,string"`
+
+ }
+
+ type GetRankingData struct {
+	UserID string
+	Duration int
+	Name string
+ }
+
+//  type Categories struct {
+// 	ID  string  `json:"id"`
+// 	Name string  `json:"name"`
+// 	ColorCode ColorCode `json:"color_code"`
+// 	UserId    string    `json:"user_id" gorm:"not null"`
+//  }
+
+
+//  type ColorCode struct {
+// 	R int `json:"r"`
+// 	G int `json:"g"`
+// 	B int `json:"b"`
+// 	A int `json:"a"`
+// }
+
+
+
+type Categories struct {
+	ID       string    `json:"id"`
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`    
+	UserId   string    `json:"user_id" gorm:"not null"`
+}
+
+ type CategoriesCreateResponse struct {
+	Name string  `json:"name"`
+	
+ }
+ 
+ type CategoriesResponse struct {
+	ID  string  `json:"id"` 
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
+ }
+
+ type CategoryResById struct {
+
+	Name     string    `json:"name"`
+	Color_r  int  `json:"color_r"` 
+    Color_g  int  `json:"color_g"`
+    Color_b  int  `json:"color_b"` 
+    Color_a  int  `json:"color_a"`  
+ }
+
+ type ResRecords struct {
+	Total_duration int 
+	CategoryId string
+ }  

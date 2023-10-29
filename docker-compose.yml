@@ -8,6 +8,10 @@ services:
   #     - '3000:3000'
   #   tty: true
   #   stdin_open: true
+
+
+
+
   go:
     build:
       context: ./backend/
@@ -40,6 +44,7 @@ services:
      MYSQL_USER:  ${MYSQL_USER}
      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
+     - mysql-local:/var/lib/mysql
      - ./backend/db/initdb.d:/docker-entrypoint-initdb.d/
     networks:
      - default
@@ -50,3 +55,6 @@ services:
       - 6379:6379
 networks:
  default:
+volumes:
+  mysql-local: # 名前付きボリュームを定義
+

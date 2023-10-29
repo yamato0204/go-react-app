@@ -24,6 +24,12 @@ const Navbar = () => {
       <Text as='b' color="black" >ユーザーを探す</Text>
         </Box>
       </Link>
+
+       <Link href="/edit" >
+      <Box mr={8}>
+      <Text as='b' color="black" >Edit</Text>
+        </Box>
+      </Link>
      
 {/* 
       {AuthState ? (

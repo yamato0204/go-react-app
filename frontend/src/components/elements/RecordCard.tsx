@@ -10,7 +10,7 @@ const RecordCard: React.FC<RecordCardProps> = ({ record }) => {
         <Box ml={20} >
            <Card  mt={4} w="80%" bg={"gray.100"}>
   <CardHeader>
-    <Heading size='md'></Heading>
+            <Heading bg={"gray.300"} size='md'>{record.name }</Heading>
   </CardHeader>
 
   <CardBody px={24}>
@@ -22,10 +22,10 @@ const RecordCard: React.FC<RecordCardProps> = ({ record }) => {
         </Heading>
        
         <Text pt='2' fontSize='sm'>
-         {record.duration}分
+        時間： {record.duration}分
                             </Text>
                              <Text pt='2' fontSize='sm'>
-          4/11
+          {record.created_at}
         </Text>
       </Box>
     </Stack>

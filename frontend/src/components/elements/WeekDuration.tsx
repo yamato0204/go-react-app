@@ -15,7 +15,7 @@ import { WeekDuration } from "@/types";
 console.log(duration)
 
 
-   console.log(duration)
+  
 
   if (status === 'loading') {
     return <div>Loading...</div>; 
@@ -28,7 +28,9 @@ console.log(duration)
 
 
   // duration が存在することが保証されたので、安全に表示できます
-     return <Text fontSize='4xl' as='b'>今月の積み上げ{ formattedDuration}</Text>;
+     return <Text fontSize='2xl' as='b'>今週の積み上げ
+           {formattedDuration}
+     </Text>;
 }
 
 export default WeekDuration;

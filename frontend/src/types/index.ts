@@ -23,7 +23,8 @@ export type ChartData = {
 }
 
 export type TodayDuration = {
-  duration: number
+ hour: number;
+  minutes: number;
 }
 
 export type WeekDuration = {
@@ -40,3 +41,16 @@ export type UserID = {
   id: number
 }
 
+export type RankingData = {
+  user_id: number
+   hour: number;
+  minutes: number;
+  name: string
+  
+
+}
+
+export type PostCategory = {
+  id : number
+  name : string
+}
